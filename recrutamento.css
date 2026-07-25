@@ -1,0 +1,424 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Teko:wght@700&display=swap');
+
+:root {
+    --bg-main: #050507;
+    --white: #ffffff;
+    --orange: #ff6b00;
+    --red-rush: #ff2a2a;
+    --blue: #0095ff;
+    --muted: #5b6476;
+    --font-titles: 'Teko', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-main);
+    color: var(--white);
+    font-family: var(--font-body);
+}
+
+span { color: var(--orange); }
+
+/* MARCA D'ÁGUA DINÂMICA DE FUNDO */
+.watermark {
+    position: fixed;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-titles);
+    font-size: 28vw;
+    color: var(--white);
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: opacity 0.4s ease;
+    user-select: none;
+}
+
+/* NAVBAR FIXA */
+header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    background-color: rgba(5, 5, 7, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(0, 149, 255, 0.08);
+}
+
+.navbar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: var(--font-titles);
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+nav ul { display: flex; list-style: none; gap: 30px; }
+nav ul li a {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+nav ul li a:hover, nav ul li a.active { color: var(--blue); }
+
+/* CONTAINER PRINCIPAL */
+.recrutamento-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 40px 60px 40px;
+    background: radial-gradient(circle at center, #0e1626 0%, #050507 100%);
+    position: relative;
+    z-index: 1;
+}
+
+.recrutamento-showcase {
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    align-items: center;
+    gap: 60px;
+    margin: 0 auto;
+}
+
+/* LADO ESQUERDO: INFOS DO STATUS */
+.status-side {
+    flex: 1;
+}
+
+.status-tag {
+    font-size: 12px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+
+.status-side h1 {
+    font-family: var(--font-titles);
+    font-size: 90px;
+    line-height: 0.85;
+    letter-spacing: 1px;
+    margin: 10px 0 20px 0;
+    text-transform: uppercase;
+}
+
+.status-description {
+    color: #b3bed5;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 450px;
+}
+
+/* REQUISITOS */
+.requisitos-box {
+    background: rgba(13, 15, 23, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 4px;
+    max-width: 450px;
+}
+
+.requisitos-box h4 {
+    font-family: var(--font-titles);
+    font-size: 24px;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: var(--white);
+}
+
+.requisitos-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.requisitos-list li {
+    font-size: 14px;
+    color: #b3bed5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.requisitos-list li i {
+    color: var(--orange);
+    font-size: 12px;
+}
+
+/* LADO DIREITO: FORMULÁRIO */
+.form-side {
+    flex: 1.2;
+    min-height: 550px;
+    position: relative;
+    background: transparent;
+    transition: all 0.35s ease;
+}
+
+.form-side::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(13, 15, 23, 0.65);
+    backdrop-filter: blur(5px);
+    clip-path: polygon(0 0, 92% 0, 100% 8%, 100% 100%, 8% 100%, 0 92%);
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: border-color 0.35s ease;
+}
+
+.glow-open { filter: drop-shadow(0 0 30px rgba(0, 149, 255, 0.25)); }
+.glow-open::before { border-color: rgba(0, 149, 255, 0.4); }
+
+.glow-closed { filter: drop-shadow(0 0 30px rgba(255, 42, 42, 0.2)); }
+.glow-closed::before { border-color: rgba(255, 42, 42, 0.4); }
+
+.form-content {
+    position: relative;
+    z-index: 2;
+    padding: 40px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-content h2 {
+    font-family: var(--font-titles);
+    font-size: 36px;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.form-divider {
+    width: 40px; height: 3px;
+    background: var(--orange);
+    margin-bottom: 25px;
+}
+
+.inputs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-group label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.input-group input, .input-group select {
+    background: rgba(5, 5, 7, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 15px;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 13px;
+    border-radius: 4px;
+    transition: 0.3s;
+    outline: none;
+}
+
+.input-group input:focus, .input-group select:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 10px rgba(0, 149, 255, 0.2);
+}
+
+/* ==========================================================================
+   ANIMAÇÃO DINÂMICA DO GRUPO DE ESPECIALIZAÇÃO (CPT)
+   ========================================================================== */
+#grupo-especializacao {
+    display: flex;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateY(-15px);
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s ease,
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Classe aplicada via JS ao selecionar CPT */
+#grupo-especializacao.mostrar {
+    max-height: 90px; /* Altura exata para o campo surgir sem quebrar o layout */
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Efeito Glow Pulsante Neon no campo extra quando ativo */
+#grupo-especializacao.mostrar select {
+    animation: pulseNeon 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseNeon {
+    0%, 100% {
+        border-color: rgba(0, 149, 255, 0.2);
+        box-shadow: 0 0 0px transparent;
+    }
+    50% {
+        border-color: var(--blue);
+        box-shadow: 0 0 12px rgba(0, 149, 255, 0.4);
+    }
+}
+/* ========================================================================== */
+
+.btn-submit {
+    background: transparent;
+    color: var(--blue);
+    border: 2px solid var(--blue);
+    padding: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: var(--blue);
+    color: var(--white);
+    box-shadow: 0 0 25px rgba(0, 149, 255, 0.4);
+}
+
+.closed-message {
+    display: none;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.closed-message i {
+    font-size: 60px;
+    color: var(--red-rush);
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+.closed-message h3 {
+    font-family: var(--font-titles);
+    font-size: 42px;
+    letter-spacing: 1px;
+}
+
+.closed-message p {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 300px;
+    margin-top: 10px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+
+/* ==========================================================================
+    MEDIA QUERIES PARA RESPONSIVIDADE (MOBILE & TABLET)
+   ========================================================================== */
+
+@media (max-width: 992px) {
+    .recrutamento-showcase {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .status-side, .form-side {
+        width: 100%;
+        max-width: 550px;
+    }
+
+    .status-side h1 {
+        font-size: 70px;
+    }
+
+    .status-description, .requisitos-box {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        padding: 15px 20px;
+    }
+
+    nav ul {
+        gap: 15px;
+    }
+
+    nav ul li a {
+        font-size: 12px;
+    }
+
+    .logo {
+        font-size: 26px;
+    }
+
+    .recrutamento-container {
+        padding: 100px 20px 40px 20px;
+    }
+
+    .status-side h1 {
+        font-size: 55px;
+    }
+
+    .form-content {
+        padding: 30px 20px;
+    }
+
+    .form-side {
+        min-height: auto;
+        padding-bottom: 20px;
+    }
+    
+    .form-side::before {
+        clip-path: polygon(0 0, 90% 0, 100% 5%, 100% 100%, 5% 100%, 0 95%);
+    }
+
+    .watermark {
+        font-size: 35vw;
+        bottom: -10px;
+    }
+}

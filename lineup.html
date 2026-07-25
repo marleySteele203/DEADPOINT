@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEADPOINT | Line-up</title>
+    <link rel="stylesheet" href="lineup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Estilos base essenciais para o funcionamento dinâmico do Modal */
+        .stats-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            z-index: 1000;
+        }
+
+        .stats-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #0b0e14; /* Midnight Blue profundo */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
+
+        #modal-title {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #modal-divider {
+            height: 3px;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, var(--modal-primary, #00ffff), var(--modal-secondary, #ff0055)) !important;
+            border-radius: 2px;
+        }
+
+        .stats-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .stat-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-info {
+            display: flex;
+            justify-content: space-between;
+            color: #a0aec0;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info i {
+            margin-right: 6px;
+            color: var(--modal-primary, #00ffff);
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .bar-bg {
+            background: rgba(255, 255, 255, 0.05);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            width: 0%; /* Começa em 0 para animar via JS */
+            background: linear-gradient(90deg, var(--modal-primary, #00ffff), var(--modal-secondary, #ff0055)) !important;
+            box-shadow: 0 0 12px var(--modal-primary, rgba(0, 255, 255, 0.5));
+            transition: width 1.2s cubic-bezier(0.1, 1, 0.1, 1); /* Animação fluida estilo gamer */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-watermark" class="watermark">DP MELI</div>
+
+    <header>
+        <div class="navbar">
+            <div class="logo">DEAD<span>POINT</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" class="active">Line-up</a></li>
+                    <li><a href="conquistas.html">Títulos</a></li>
+                    <li><a href="agenda.html">Agenda</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="slider-container">
+        
+        <button class="nav-btn prev-btn" onclick="changePlayer(-1)">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="player-showcase" id="player-showcase">
+            
+            <div class="player-image-side" id="player-img-container" style="--role-color-primary: #00ffff; --role-color-secondary: #ff0055; box-shadow: 0 0 30px var(--role-color-primary);">
+                <img id="player-img" src="mahel.png" alt="Player">
+                <div class="role-badge" id="player-role" style="background: linear-gradient(135deg, var(--role-color-primary), var(--role-color-secondary));">SNIPER / CEO</div>
+            </div>
+
+            <div class="player-info-side">
+                <span class="line-tag">Roster Oficial</span>
+                <h1 id="player-nick">DP MELI</h1>
+                <h3 id="player-name">Marley Mahel Steele</h3>
+                
+                <p class="player-bio" id="player-bio">Responsável pela estratégia, chamadas de call decisivas e coordenação da equipe em direção ao topo do cenário.</p>
+
+                <div class="player-actions">
+                    <button class="btn-stats" id="btn-stats-id" onclick="toggleStatsModal(true)" style="background: linear-gradient(135deg, var(--role-color-primary), var(--role-color-secondary));">
+                        <i class="fa-solid fa-chart-simple"></i> Estatísticas
+                    </button>
+                    <div class="player-socials">
+                        <a href="https://instagram.com/marley_mahel_" id="link-ig" target="_blank" onclick="handleSocialClick(event, 'ig')"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@dp_meli_" id="link-tk" target="_blank" onclick="handleSocialClick(event, 'tk')"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="nav-btn next-btn" onclick="changePlayer(1)">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+    </main>
+
+    <div class="stats-modal" id="stats-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="toggleStatsModal(false)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <h2 id="modal-title">DESEMPENHO: DP MELI</h2>
+            <div class="line-divider" id="modal-divider"></div>
+
+            <div class="stats-grid">
+                <div class="stat-bar-wrapper">
+                    <div class="stat-info">
+                        <span><i class="fa-solid fa-skull"></i> K/D RATE</span>
+                        <span id="stat-kd-val" class="stat-value">2.45</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill" id="bar-kd"></div>
+                    </div>
+                </div>
+
+                <div class="stat-bar-wrapper">
+                    <div class="stat-info">
+                        <span><i class="fa-solid fa-crosshairs"></i> PRECISÃO (HEADSHOT %)</span>
+                        <span id="stat-hs-val" class="stat-value">42%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill" id="bar-hs"></div>
+                    </div>
+                </div>
+
+                <div class="stat-bar-wrapper">
+                    <div class="stat-info">
+                        <span><i class="fa-solid fa-fire"></i> DANO MÉDIO / PARTIDA</span>
+                        <span id="stat-dmg-val" class="stat-value">1280</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill" id="bar-dmg"></div>
+                    </div>
+                </div>
+
+                <div class="stat-bar-wrapper">
+                    <div class="stat-info">
+                        <span><i class="fa-solid fa-id-card"></i> PARTICIPAÇÃO EM ABATES</span>
+                        <span id="stat-kp-val" class="stat-value">72%</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill" id="bar-kp"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Definição da paleta de cores primárias para cada tipo de função isolada
+        const roleColors = {
+            "RUSH": "#ff4500",       // Laranja Intenso
+            "RUSH N1": "#ff0000",    // Vermelho Vivo
+            "RUSH N2": "#ff6600",    // Laranja Claro
+            "RUSH N3": "#ffcc00",    // Amarelo Ouro
+            "SNIPER": "#00ffff",     // Ciano / Azul Neon
+            "CEO": "#ff0055",        // Rosa Choque / Magenta
+            "GRANADEIRO": "#00ff00", // Verde Limão
+            "SUPORTE": "#9933ff"     // Roxo Elétrico
+        };
+
+        const players = [
+            {
+                nick: "DP MELI",
+                name: "MARLEY STEELE",
+                role: "SNIPER / CEO",
+                bio: "Responsável pela estratégia, chamadas de call decisivas e coordenação da equipe em direção ao topo do cenário.",
+                img: "mahel.png",
+                ig: "https://instagram.com/marley_mahel_",
+                tk: "https://tiktok.com/@dp_meli_",
+                stats: { kd: "2.45", kdPct: "85%", hs: "42%", hsPct: "65%", dmg: "1280", dmgPct: "90%", kp: "72%", kpPct: "72%" }
+            },
+            {
+                nick: "DP ALEX7",
+                name: "ALEXANDRE BENTO",
+                role: "RUSH N1",
+                bio: "A ponta de lança da equipe. Especialista em quebrar linhas inimigas e garantir os primeiros abates nos combates mais intensos.",
+                img: "alex.png",
+                ig: "https://instagram.com/alexzz__1979",
+                tk: "https://tiktok.com/@alexzzbento77",
+                stats: { kd: "2.10", kdPct: "78%", hs: "55%", hsPct: "88%", dmg: "1410", dmgPct: "95%", kp: "65%", kpPct: "65%" }
+            },
+            {
+                nick: "DP NIGHTWING",
+                name: "GABRIEL OLIVEIRA",
+                role: "RUSH N1 / RUSH N2",
+                bio: "Responsável pelo re-frag e continuidade da aggression. Entra em cena imediatamente após o primeiro confronto para punir o inimigo exposto e dominar a área conquistada.",
+                img: "bzp.png",
+                ig: "https://instagram.com/dp.gabo9",
+                tk: "https://tiktok.com/@night.rs09",
+                stats: { kd: "2.10", kdPct: "78%", hs: "55%", hsPct: "88%", dmg: "1410", dmgPct: "95%", kp: "65%", kpPct: "65%" }
+            },
+            {
+                nick: "DP CORONA",
+                name: "KELSON FERREIRA",
+                role: "RUSH N2 / RUSH N3",
+                bio: "Jogador de suporte imediato ao primeiro homem. Avança logo atrás do Rush 1 para garantir a eliminação de troca caso o aliado caia, mantendo a superioridade numérica e o ritmo do ataque.",
+                img: "corona.png",
+                ig: "https://instagram.com",
+                tk: "https://tiktok.com",
+                stats: { kd: "2.10", kdPct: "78%", hs: "55%", hsPct: "88%", dmg: "1410", dmgPct: "95%", kp: "65%", kpPct: "65%" }
+            },
+            {
+                nick: "DP WARLOCK",
+                name: "CLELSON BASTOS",
+                role: "GRANADEIRO",
+                bio: "A ponta de lança da equipe. Especialista em quebrar linhas inimigas e garantir os primeiros abates nos combates mais intensos.",
+                img: "warlock.png",
+                ig: "https://instagram.com",
+                tk: "https://tiktok.com",
+                stats: { kd: "2.10", kdPct: "78%", hs: "55%", hsPct: "88%", dmg: "1410", dmgPct: "95%", kp: "65%", kpPct: "65%" }
+            },
+            {
+                nick: "DP SAMU",
+                name: "SAMU",
+                role: "RUSH N2",
+                bio: "O pilar de sustentação da entrada do round. Mantém a pressão ofensiva activa, assegurando que o território aberto pelo primeiro jogador permaneça sob o controle da equipe.",
+                img: "samu.png",
+                ig: "https://instagram.com",
+                tk: "https://tiktok.com",
+                stats: { kd: "2.10", kdPct: "78%", hs: "55%", hsPct: "88%", dmg: "1410", dmgPct: "95%", kp: "65%", kpPct: "65%" }
+            },
+            {
+                nick: "DP DARKZADA",
+                name: "YANICK BASTOS",
+                role: "RUSH N3",
+                bio: "Garantir as eliminações dos inimigos que já foram baleados pelos dois primeiros atacantes, evitando que eles se recuperem.",
+                img: "yanick.png",
+                ig: "https://instagram.com/yanick_bastos7",
+                tk: "https://tiktok.com/@darkzada.x",
+                stats: { kd: "2.10", kdPct: "78%", hs: "55%", hsPct: "88%", dmg: "1410", dmgPct: "95%", kp: "65%", kpPct: "65%" }
+            },
+            {
+                nick: "DP ERICK",
+                name: "ERICK",
+                role: "RUSH N1" ,
+                bio: "Ponta de lança da equipe. Assume o maior risco da partida ao invadir áreas desconhecidas para colher informações e abrir os caminhos para o avanço do time.",
+                img: "erick.png",
+                ig: "https://instagram.com",
+                tk: "https://tiktok.com",
+                stats: { kd: "2.10", kdPct: "78%", hs: "55%", hsPct: "88%", dmg: "1410", dmgPct: "95%", kp: "65%", kpPct: "65%" }
+            },
+            {
+                nick: "DP NEON",
+                name: "NUNO TEXEIRA",
+                role: "SUPORTE / SNIPER",
+                bio: "Mira cirúrgica de longa distância. Garante o controle total do mapa enquanto os avançados cumprem seus objetivos.",
+                img: "neon.png",
+                ig: "https://instagram.com",
+                tk: "https://tiktok.com",
+                stats: { kd: "3.15", kdPct: "98%", hs: "68%", hsPct: "96%", dmg: "980", dmgPct: "70%", kp: "58%", kpPct: "58%" }
+            }
+        ];
+
+        let currentIndex = 0;
+
+        // Trata o clique nas redes sociais para verificar se o jogador possui o perfil
+        function handleSocialClick(event, platform) {
+            const player = players[currentIndex];
+            const url = player[platform];
+            const invalidUrls = ["https://instagram.com", "https://instagram.com/", "https://tiktok.com", "https://tiktok.com/", "", "#"];
+
+            if (!url || invalidUrls.includes(url.trim())) {
+                event.preventDefault();
+                alert("NÃO POSSUI");
+            }
+        }
+
+        // Função auxiliar para identificar e extrair as cores corretas com base na string 'role'
+        function getRoleColors(roleString) {
+            const cleanRoles = roleString.split('/').map(r => r.trim());
+            let primaryColor = roleColors[cleanRoles[0]] || "#ffffff";
+            let secondaryColor = cleanRoles[1] ? (roleColors[cleanRoles[1]] || primaryColor) : primaryColor;
+            return { primary: primaryColor, secondary: secondaryColor };
+        }
+
+        // Atualiza as strings, dados numéricos e zera as larguras das barras para preparar animação
+        function updateModalData() {
+            const p = players[currentIndex];
+            const colors = getRoleColors(p.role);
+            const modal = document.getElementById('stats-modal');
+
+            // Passa as cores dinâmicas do jogador ativo para as propriedades CSS do modal
+            modal.style.setProperty('--modal-primary', colors.primary);
+            modal.style.setProperty('--modal-secondary', colors.secondary);
+
+            document.getElementById('modal-title').innerText = `DESEMPENHO: ${p.nick}`;
+            document.getElementById('stat-kd-val').innerText = p.stats.kd;
+            document.getElementById('stat-hs-val').innerText = p.stats.hs;
+            document.getElementById('stat-dmg-val').innerText = p.stats.dmg;
+            document.getElementById('stat-kp-val').innerText = p.stats.kp;
+
+            // Retorna a largura para 0% antes da abertura para garantir o efeito visual progressivo
+            document.getElementById('bar-kd').style.width = '0%';
+            document.getElementById('bar-hs').style.width = '0%';
+            document.getElementById('bar-dmg').style.width = '0%';
+            document.getElementById('bar-kp').style.width = '0%';
+        }
+
+        function changePlayer(direction) {
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = players.length - 1;
+            if (currentIndex >= players.length) currentIndex = 0;
+
+            const imgContainer = document.getElementById('player-img-container');
+            const infoSide = document.querySelector('.player-info-side');
+            const watermark = document.getElementById('bg-watermark');
+
+            imgContainer.classList.add('slide-out-left');
+            infoSide.classList.add('slide-out-right');
+            watermark.style.opacity = "0";
+
+            setTimeout(() => {
+                const p = players[currentIndex];
+                const colors = getRoleColors(p.role);
+
+                imgContainer.style.setProperty('--role-color-primary', colors.primary);
+                imgContainer.style.setProperty('--role-color-secondary', colors.secondary);
+                imgContainer.style.boxShadow = `0 0 30px ${colors.primary}`;
+
+                document.getElementById('player-nick').innerText = p.nick;
+                watermark.innerText = p.nick;
+                document.getElementById('player-name').innerText = p.name;
+                document.getElementById('player-role').innerText = p.role;
+                document.getElementById('player-bio').innerText = p.bio;
+                document.getElementById('player-img').src = p.img;
+                document.getElementById('link-ig').href = p.ig;
+                document.getElementById('link-tk').href = p.tk;
+
+                // Mantém os dados estruturais do modal prontos em background durante a navegação do slider
+                updateModalData();
+
+                imgContainer.classList.remove('slide-out-left');
+                infoSide.classList.remove('slide-out-right');
+                watermark.style.opacity = "0.03";
+            }, 350);
+        }
+
+        function toggleStatsModal(show) {
+            const modal = document.getElementById('stats-modal');
+            const p = players[currentIndex];
+
+            if (show) {
+                updateModalData();
+                modal.classList.add('active');
+                
+                // Dispara o crescimento das barras após uma pequena folga de renderização (150ms)
+                setTimeout(() => {
+                    document.getElementById('bar-kd').style.width = p.stats.kdPct;
+                    document.getElementById('bar-hs').style.width = p.stats.hsPct;
+                    document.getElementById('bar-dmg').style.width = p.stats.dmgPct;
+                    document.getElementById('bar-kp').style.width = p.stats.kpPct;
+                }, 150);
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        // Inicialização inicial da estrutura do modal
+        updateModalData();
+    </script>
+</body>
+</html>

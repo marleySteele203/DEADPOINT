@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEADPOINT | Recrutamento</title>
+    <link rel="stylesheet" href="recrutamento.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="bg-watermark" class="watermark">RECRUIT</div>
+
+    <header>
+        <div class="navbar">
+            <div class="logo">DEAD<span>POINT</span></div>
+            
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="lineup.html">Line-up</a></li>
+                    <li><a href="conquistas.html">Títulos</a></li>
+                    <li><a href="agenda.html">Agenda</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="recrutamento-container">
+        <div class="recrutamento-showcase">
+            
+            <div class="status-side">
+                <span class="status-tag" id="status-tag">Status</span>
+                <h1 id="status-title">Recrutamento</h1>
+                <p class="status-description" id="status-desc">Buscamos jogadores dedicados, com mentalidade competitiva avançada e prontos para representar a nossa tag em alto nível.</p>
+                
+                <div class="requisitos-box">
+                    <h4>Requisitos Mínimos</h4>
+                    <ul class="requisitos-list">
+                        <li><i class="fa-solid fa-angles-right"></i> Disponibilidade para treinos diários</li>
+                        <li><i class="fa-solid fa-angles-right"></i> Microfone de qualidade e boa comunicação</li>
+                        <li><i class="fa-solid fa-angles-right"></i> Respeito à liderança e chamadas (calls)</li>
+                        <li><i class="fa-solid fa-angles-right"></i> Experiência prévia em campeonatos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-side" id="form-card">
+                
+                <div class="form-content" id="form-container">
+                    <h2>Faça parte da Line</h2>
+                    <div class="form-divider"></div>
+                    
+                    <form id="form-inscricao" class="inputs-grid" onsubmit="enviarParaDiscord(event)">
+                        <div class="input-group">
+                            <label>Nickname em Jogo</label>
+                            <input type="text" id="player-nick" placeholder="Ex: DP MELI" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Função Principal</label>
+                            <select id="player-role" onchange="verificarRole(this.value)" required>
+                                <option value="" disabled selected hidden>Selecione sua role</option>
+                                <option value="SNIPER">SNIPER</option>
+                                <option value="GRANADEIRO">GRANADEIRO</option>
+                                <option value="RUSH N1">RUSH N1</option>
+                                <option value="RUSH N2">RUSH N2</option>
+                                <option value="RUSH N3">RUSH N3</option>
+                                <option value="CPT">CPT (Capitão)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group" id="grupo-especializacao">
+                            <label>Especialização do CPT</label>
+                            <select id="player-specialization">
+                                <option value="" disabled selected hidden>Selecione sua segunda role</option>
+                                <option value="SNIPER">SNIPER</option>
+                                <option value="GRANADEIRO">GRANADEIRO</option>
+                                <option value="RUSH N1">RUSH N1</option>
+                                <option value="RUSH N2">RUSH N2</option>
+                                <option value="RUSH N3">RUSH N3</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Link do Instagram ou Contato</label>
+                            <input type="text" id="player-contact" placeholder="Ex: @marley_mahel_" required>
+                        </div>
+                        
+                        <button type="submit" id="btn-submit" class="btn-submit">Enviar Candidatura</button>
+                    </form>
+                </div>
+
+                <div class="form-content closed-message" id="closed-container">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <h3>Inscrições Encerradas</h3>
+                    <p>No momento a nossa line-up está completa. Fique atento às nossas redes sociais para futuras vagas.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ==========================================================
+        // CONTROLE DE STATUS DO RECRUTAMENTO
+        // ==========================================================
+        const recrutamentoAberto = true; 
+
+        function configurarPaginaRecrutamento() {
+            const tag = document.getElementById('status-tag');
+            const title = document.getElementById('status-title');
+            const desc = document.getElementById('status-desc');
+            const card = document.getElementById('form-card');
+            const formContainer = document.getElementById('form-container');
+            const closedContainer = document.getElementById('closed-container');
+            const watermark = document.getElementById('bg-watermark');
+
+            if (recrutamentoAberto) {
+                tag.innerText = "Vagas Disponíveis";
+                tag.style.color = "var(--blue)";
+                title.innerHTML = "Inscrições <span>Abertas</span>";
+                desc.innerText = "Nosso roster está em processo de expansão. Preencha o formulário tático ao lado para analisarmos suas estatísticas e gameplay.";
+                
+                card.className = "form-side glow-open";
+                formContainer.style.display = "flex";
+                closedContainer.style.display = "none";
+                watermark.innerText = "OPEN";
+            } else {
+                tag.innerText = "Roster Fechado";
+                tag.style.color = "var(--red-rush)";
+                title.innerHTML = "Recrutamento <span>Pausado</span>";
+                desc.innerText = "Atualmente todas as vagas oficiais foram preenchidas e a equipe está em fase de preparação e foco nos campeonatos.";
+                
+                card.className = "form-side glow-closed";
+                formContainer.style.display = "none";
+                closedContainer.style.display = "flex";
+                watermark.innerText = "CLOSED";
+            }
+        }
+
+        // ==========================================================
+        // LOGICA DE EXIBIÇÃO DA ABAS ESPECÍFICAS (COM ANIMAÇÃO)
+        // ==========================================================
+        function verificarRole(valor) {
+            const grupoEspecializacao = document.getElementById('grupo-especializacao');
+            const selectEspecializacao = document.getElementById('player-specialization');
+
+            if (valor === "CPT") {
+                grupoEspecializacao.classList.add('mostrar');
+                selectEspecializacao.required = true;
+            } else {
+                grupoEspecializacao.classList.remove('mostrar');
+                selectEspecializacao.required = false;
+                selectEspecializacao.value = ""; 
+            }
+        }
+
+        // ==========================================================
+        // ENVIO AUTOMATIZADO PARA O DISCORD (WEBHOOK)
+        // ==========================================================
+        function enviarParaDiscord(event) {
+            event.preventDefault();
+
+            const btnSubmit = document.getElementById('btn-submit');
+            const nick = document.getElementById('player-nick').value;
+            const role = document.getElementById('player-role').value;
+            const spec = document.getElementById('player-specialization').value;
+            const contact = document.getElementById('player-contact').value;
+
+            btnSubmit.innerText = "Enviando...";
+            btnSubmit.disabled = true;
+
+            const webhookURL = "https://discord.com/api/webhooks/1524955282424336425/4oi-s53iIMkFYuh7IB0f78vSvthzM3tdVq4E2NIX1HpNiVgGQl-RiOqDnELVrMyKznwm";
+
+            const roleFormatada = role === "CPT" ? `👑 CPT (${spec})` : role;
+
+            const embedData = {
+                username: "DEADPOINT BOT",
+                embeds: [{
+                    title: "📝 NOVA CANDIDATURA RECEBIDA",
+                    color: 245, 
+                    fields: [
+                        { name: "🎮 Nickname", value: `**${nick}**`, inline: true },
+                        { name: "🎯 Função / Role", value: roleFormatada, inline: true },
+                        { name: "📞 Contato / Redes", value: contact, inline: false }
+                    ],
+                    footer: {
+                        text: "DEADPOINT Official Recruitment System"
+                    },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(embedData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Candidatura enviada com sucesso! Boa sorte.');
+                    document.getElementById('form-inscricao').reset();
+                    document.getElementById('grupo-especializacao').classList.remove('mostrar');
+                } else {
+                    alert('Houve um erro ao processar o envio. Verifica o teu Webhook.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro de rede:', error);
+                alert('Erro de conexão com o servidor do Discord.');
+            })
+            .finally(() => {
+                btnSubmit.innerText = "Enviar Candidatura";
+                btnSubmit.disabled = false;
+            });
+        }
+
+        window.onload = configurarPaginaRecrutamento;
+    </script>
+</body>
+</html>

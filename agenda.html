@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEADPOINT | Cronograma de Operações</title>
+    <link rel="stylesheet" href="agenda.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="hud-scanlines"></div>
+
+    <header>
+        <div class="navbar">
+            <div class="logo">DEAD<span>POINT</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="lineup.html">Line-up</a></li>
+                    <li><a href="conquistas.html">Títulos</a></li>
+                    <li><a href="#" class="active">Agenda</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="hud-container">
+        
+        <div class="terminal-header">
+            <div class="sys-status"></div>
+            <h1> CRONOGRAMA DE OPERAÇÕES</h1>
+            <p class="crypto-sub">Diretrizes ativas, agendamentos táticos e arquivos de missões.</p>
+        </div>
+
+        <div class="hud-filters">
+            <button class="filter-btn active" onclick="filtrarAgenda('ALL', event)">[ ALL_OPS ]</button>
+            <button class="filter-btn" onclick="filtrarAgenda('CAMPEONATO', event)">[ CAMPEONATOS ]</button>
+            <button class="filter-btn" onclick="filtrarAgenda('TREINO', event)">[ SCRIMS ]</button>
+            <button class="filter-btn" onclick="filtrarAgenda('LIVE', event)">[ LIVES ]</button>
+        </div>
+
+        <!-- LISTA PRINCIPAL (ATIVOS / AGUARDANDO) -->
+        <div id="agenda-entries" class="agenda-list"></div>
+
+        <!-- SEÇÃO DA LIXEIRA / ARQUIVO MORTO -->
+        <div class="trash-section-wrapper">
+            <div class="trash-header">
+                <h2><i class="fa-solid fa-trash-can"></i> [ ARQUIVO DE OPERAÇÕES CONCLUÍDAS ]</h2>
+                <p>Histórico de missões finalizadas pelo comando.</p>
+            </div>
+            <div id="agenda-trash" class="agenda-list trash-mode"></div>
+        </div>
+
+    </main>
+
+    <script>
+        // MOCK DATA ATUALIZADA (Inclui links do TikTok das organizadoras)
+        const eventosDaOrganização = [
+            {
+                id: "evt_01",
+                tipo: "CAMPEONATO", 
+                titulo: "ARE LEAGUE",
+                descricao: "Quedas decisivas da fase de grupos. Transmissão oficial nos canais da liga.",
+                dataIso: "2026-06-27",
+                dataFimIso: "2026-08-01",
+                hora: "21:10 CAT",
+                premiacao: "$100 USD",
+                pais: "Africa Do Sul",
+                tiktokUrl: "https://www.tiktok.com/@african_rise9" // Substitua pelo link correto
+            },
+            {
+                id: "evt_02",
+                tipo: "CAMPEONATO",
+                titulo: "COPA ENIGMA X BATATA.DOCE",
+                descricao: "Quedas decisivas da fase de grupos. Transmissão oficial nos canais da copa.",
+                dataIso: "2026-06-13",
+                dataFimIso: "2026-08-01",
+                hora: "19:00 CAT",
+                premiacao: "5000 MTS",
+                pais: "Mocambique",
+                tiktokUrl: "https://www.tiktok.com/@enigma..mz" // Substitua pelo link correto
+            },
+            {
+                id: "evt_03",
+                tipo: "CAMPEONATO",
+                titulo: "Nacional Angolano",
+                descricao: "Transmissão ao vivo no tiktok e youtube mostrando o POV da line principal e abertura de vagas.",
+                dataIso: "2026-06-04", 
+                dataFimIso: "2026-07-25",
+                hora: "21:00 CAT",
+                premiacao: "Vaga",
+                pais: "Angola",
+                tiktokUrl: "https://www.tiktok.com/@meridian_esports" // Substitua pelo link correto
+            }
+        ];
+
+        function formatarDataBr(dataIso) {
+            const [ano, mes, dia] = dataIso.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        function gerarLinkGoogleCalendar(evento) {
+            const dataLimpa = evento.dataIso.replace(/-/g, '');
+            const horaLimpa = evento.hora.split(' ')[0].replace(/:/g, '') + '00';
+            return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('DEADPOINT | ' + evento.titulo)}&dates=${dataLimpa}T${horaLimpa}/${dataLimpa}T${parseInt(horaLimpa)+20000}&details=${encodeURIComponent(evento.descricao)}`;
+        }
+
+        function calcularStatusEAlocacao(evento) {
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+
+            const [anoI, mesI, diaI] = evento.dataIso.split('-');
+            const [anoF, mesF, diaF] = evento.dataFimIso.split('-');
+            
+            const dataInicio = new Date(anoI, mesI - 1, diaI);
+            const dataFim = new Date(anoF, mesF - 1, diaF);
+            dataFim.setHours(23, 59, 59, 999);
+
+            if (hoje > dataFim) {
+                return { status: "CONCLUÍDO", classe: "status-ended", dot: "status-dead", alvo: "LIXEIRA" };
+            } else if (hoje >= dataInicio && hoje <= dataFim) {
+                return { status: "EM ANDAMENTO", classe: "status-live-now", dot: "status-live", alvo: "PRINCIPAL" };
+            } else {
+                return { status: "AGUARDANDO", classe: "status-waiting", dot: "status-ok", alvo: "PRINCIPAL" };
+            }
+        }
+
+        function renderizarAgenda(eventos, filtro = 'ALL') {
+            const containerPrincipal = document.getElementById('agenda-entries');
+            const containerLixeira = document.getElementById('agenda-trash');
+            
+            containerPrincipal.innerHTML = ''; 
+            containerLixeira.innerHTML = ''; 
+
+            const eventosFiltrados = filtro === 'ALL' ? eventos : eventos.filter(e => e.tipo === filtro);
+
+            let ativosContador = 0;
+            let arquivadosContador = 0;
+
+            eventosFiltrados.forEach(evento => {
+                let iconClass = "fa-solid fa-crosshairs";
+                let typeClass = "tag-default";
+                
+                if (evento.tipo === "CAMPEONATO") { iconClass = "fa-solid fa-trophy"; typeClass = "tag-championship"; }
+                else if (evento.tipo === "TREINO") { iconClass = "fa-solid fa-gun"; typeClass = "tag-scrim"; }
+                else if (evento.tipo === "LIVE") { iconClass = "fa-solid fa-tv"; typeClass = "tag-live"; }
+
+                const infoStatus = calcularStatusEAlocacao(evento);
+                const googleCalendarUrl = gerarLinkGoogleCalendar(evento);
+
+                const periodoDatas = evento.dataIso === evento.dataFimIso 
+                    ? formatarDataBr(evento.dataIso)
+                    : `${formatarDataBr(evento.dataIso)} até ${formatarDataBr(evento.dataFimIso)}`;
+
+                // Valida se o evento possui link do tiktok, senão deixa um link padrão ou hashtag
+                const tiktokLink = evento.tiktokUrl ? evento.tiktokUrl : "https://www.tiktok.com/";
+
+                const cardHTML = `
+                    <div class="agenda-row ${infoStatus.alvo === 'LIXEIRA' ? 'archived-card' : ''}" data-id="${evento.id}">
+                        <div class="row-left">
+                            <div class="icon-box-hud"><i class="${iconClass}"></i></div>
+                            <div class="event-details">
+                                <div class="tag-row-wrapper">
+                                    <span class="event-type-tag ${typeClass}">${evento.tipo}</span>
+                                    <span class="event-geo-tag"><i class="fa-solid fa-earth-americas"></i> ${evento.pais}</span>
+                                </div>
+                                <h2>${evento.titulo}</h2>
+                                <p>${evento.descricao}</p>
+                                <div class="hud-extra-info">
+                                    <span><i class="fa-solid fa-award"></i> Premiação: <strong>${evento.premiacao}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-right">
+                            <div class="time-block">
+                                <div class="time-item"><i class="fa-regular fa-calendar"></i> ${periodoDatas}</div>
+                                <div class="time-item"><i class="fa-regular fa-clock"></i> ${evento.hora}</div>
+                            </div>
+                            <div class="action-block-hud">
+                                <!-- BOTÃO DO TIKTOK DA ORGANIZADORA -->
+                                <a href="${tiktokLink}" target="_blank" class="btn-tiktok-organizador" title="TikTok da Organizadora" style="margin-right: 5px;">
+                                    <i class="fa-brands fa-tiktok"></i>
+                                </a>
+
+                                ${infoStatus.alvo === 'PRINCIPAL' ? `
+                                    <a href="${googleCalendarUrl}" target="_blank" class="btn-sync-calendar" title="Adicionar à minha Agenda">
+                                        <i class="fa-solid fa-calendar-plus"></i>
+                                    </a>
+                                ` : `
+                                    <span class="btn-sync-calendar disabled-btn" title="Missão Encerrada">
+                                        <i class="fa-solid fa-box-archive"></i>
+                                    </span>
+                                `}
+                                <div class="status-block ${infoStatus.classe}">
+                                    <span class="indicator-dot ${infoStatus.dot}"></span>
+                                    <span class="status-text">${infoStatus.status}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                if (infoStatus.alvo === "PRINCIPAL") {
+                    containerPrincipal.innerHTML += cardHTML;
+                    ativosContador++;
+                } else {
+                    containerLixeira.innerHTML += cardHTML;
+                    arquivadosContador++;
+                }
+            });
+
+            if (ativosContador === 0) {
+                containerPrincipal.innerHTML = `<div class="no-events-alert">// NENHUMA OPERAÇÃO ATIVA OU AGUARDANDO NESTE SETOR</div>`;
+            }
+            if (arquivadosContador === 0) {
+                containerLixeira.innerHTML = `<div class="no-events-alert" style="opacity: 0.5;">// HISTÓRICO LIMPO. NENHUMA OPERAÇÃO ARQUIVADA.</div>`;
+            }
+        }
+
+        function filtrarAgenda(tipo, event) {
+            const botoes = document.querySelectorAll('.filter-btn');
+            botoes.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            renderizarAgenda(eventosDaOrganização, tipo);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderizarAgenda(eventosDaOrganização);
+        });
+    </script>
+</body>
+</html>
