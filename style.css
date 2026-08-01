@@ -1,336 +1,314 @@
 /* ==========================================================================
-   RESET BÁSICO, VARIÁVEIS E FONTES
+   DEADPOINT | E-SPORTS TEAM - GLOBAL & HERO STYLE (COMPLETO)
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Teko:wght@700&display=swap');
 
-:root {
-    /* Cores da Line */
-    --preto-profundo: #08080a;
-    --preto-bg: #0d0d11;
-    --branco-puro: #ffffff;
-    --cinza-texto: #cbd5e1;
-    --azul-tech: #0095ff;
-    --laranja-dead: #ff6b00;
-    
-    /* Fontes */
-    --fonte-titulo: 'Teko', sans-serif;
-    --fonte-corpo: 'Poppins', sans-serif;
-}
-
+/* 1. RESET BASE */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    scroll-behavior: smooth;
+    font-family: 'Rajdhani', 'Segoe UI', sans-serif !important;
 }
 
 body {
-    background-color: var(--preto-profundo);
-    color: var(--branco-puro);
-    font-family: var(--fonte-corpo);
+    background-color: #05070a;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     overflow-x: hidden;
+    position: relative;
 }
 
-span {
-    color: var(--laranja-dead);
-    text-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+/* Força compatibilidade dos Ícones Font Awesome */
+i, .fa-solid, .fa-regular, .fa-brands {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+    font-style: normal;
 }
 
 /* ==========================================================================
-   NAVBAR (Desktop)
+   2. NAVBAR & HEADER
    ========================================================================== */
 header {
-    position: fixed;
+    width: 100%;
+    padding: 20px 5%;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    background-color: rgba(13, 13, 17, 0.85);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px); /* Suporte para Safari */
-    z-index: 1000;
-    border-bottom: 2px solid rgba(0, 149, 255, 0.15);
+    z-index: 10;
 }
 
 .navbar {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 15px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .logo {
-    font-family: var(--fonte-titulo);
-    font-size: 32px;
-    text-transform: uppercase;
+    font-size: 28px;
+    font-weight: 900;
     letter-spacing: 2px;
-    color: var(--branco-puro);
 }
 
-nav ul {
+.logo span {
+    color: #ff0055;
+}
+
+/* Menu de Navegação */
+nav ul, .nav-list {
     display: flex;
     list-style: none;
     gap: 30px;
 }
 
-nav ul li a {
-    color: var(--cinza-texto);
+nav a {
+    color: #a0aec0;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 700;
+    font-size: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: 0.3s;
-    position: relative;
+    transition: color 0.3s;
 }
 
-/* Links mudam de cor no hover e quando ativos, sem linhas embaixo */
-nav ul li a:hover, 
-nav ul li a.active {
-    color: var(--azul-tech);
+nav a:hover,
+nav a.active {
+    color: #00ffff;
+}
+
+/* Botão Hambúrguer (Escondido no Desktop) */
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    color: #ffffff;
+    cursor: pointer;
 }
 
 /* ==========================================================================
-   HERO SECTION (Desktop)
+   3. HERO SECTION
    ========================================================================== */
 .hero {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: relative;
-    overflow: hidden;
-}
-
-/* Camada 1: Imagem/Vídeo de Fundo */
-.hero-bg {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 5% 40px;
     z-index: 1;
 }
 
-.hero-bg img, .hero-bg video {
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.hero-bg img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.25;
-    filter: grayscale(100%) contrast(120%);
+    object-position: center;
+    filter: brightness(0.4) contrast(1.1);
 }
 
-/* Camada 2: Overlay Gradiente */
 .hero-overlay {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: radial-gradient(circle at center, rgba(8,8,10,0.5) 0%, rgba(8,8,10,1) 90%);
-    z-index: 2;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(5, 7, 10, 0.3) 0%, #05070a 90%);
+    z-index: 1;
 }
 
-/* Camada 3: Conteúdo Central */
 .hero-content {
+    position: relative;
+    z-index: 5;
+    max-width: 850px;
     text-align: center;
-    z-index: 3;
-    max-width: 900px;
-    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .hero-content h1 {
-    font-family: var(--fonte-titulo);
-    font-size: 130px;
-    line-height: 0.9;
-    font-weight: 700;
-    letter-spacing: -2px;
-    margin-bottom: 20px;
-    color: var(--branco-puro);
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 15px;
     text-transform: uppercase;
-    text-shadow: 0 0 30px rgba(255, 255, 255, 0.1), 0 0 60px rgba(255, 107, 0, 0.2);
+}
+
+.hero-content h1 span {
+    color: #ff0055;
 }
 
 .hero-content p {
-    font-size: 20px;
-    color: var(--cinza-texto);
+    font-size: 18px;
+    color: #cbd5e0;
     max-width: 650px;
-    margin: 0 auto 50px auto;
     line-height: 1.6;
-    font-weight: 400;
+    font-weight: 600;
+    margin-bottom: 35px;
 }
 
 /* ==========================================================================
-   BOTÕES DA HERO
+   4. BOTÕES DA HERO
    ========================================================================== */
 .hero-btns {
     display: flex;
-    gap: 20px;
-    justify-content: center;
+    gap: 15px;
     flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 35px;
 }
 
 .btn-hero {
-    display: inline-block;
-    padding: 16px 45px;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 4px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 14px;
-    transition: 0.3s ease-out;
-    position: relative;
-    overflow: hidden;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
-/* Botão Primário (Laranja) */
 .btn-hero.primary {
-    background-color: var(--laranja-dead);
-    color: var(--preto-profundo);
-    box-shadow: 0 5px 25px rgba(255, 107, 0, 0.3);
+    background: #ff0055;
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
 }
 
 .btn-hero.primary:hover {
-    box-shadow: 0 8px 35px rgba(255, 107, 0, 0.6), 0 0 15px rgba(0, 149, 255, 0.3);
-    transform: translateY(-4px);
+    background: #e0004c;
+    box-shadow: 0 6px 20px rgba(255, 0, 85, 0.7);
+    transform: translateY(-2px);
 }
 
-/* Botão Secundário (Azul) */
 .btn-hero.secondary {
-    background-color: transparent;
-    color: var(--azul-tech);
-    border: 2px solid var(--azul-tech);
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid #00ffff;
+    color: #00ffff;
 }
 
 .btn-hero.secondary:hover {
-    background-color: var(--azul-tech);
-    color: var(--preto-profundo);
-    box-shadow: 0 5px 25px rgba(0, 149, 255, 0.4);
-    transform: translateY(-4px);
+    background: #00ffff;
+    color: #05070a;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    transform: translateY(-2px);
 }
 
-/* Botão de Recrutamento */
 .btn-hero.recruitment {
-    background-color: transparent;
-    color: var(--laranja-dead);
-    border: 2px solid var(--laranja-dead);
-    box-shadow: inset 0 0 10px rgba(255, 107, 0, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
 }
 
 .btn-hero.recruitment:hover {
-    background-color: var(--laranja-dead);
-    color: var(--preto-profundo);
-    box-shadow: 0 8px 30px rgba(255, 107, 0, 0.5);
-    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
+    transform: translateY(-2px);
 }
 
 /* ==========================================================================
-   REDES SOCIAIS
+   5. REDES SOCIAIS
    ========================================================================== */
 .hero-socials {
-    margin-top: 40px;
     display: flex;
-    justify-content: center;
-    gap: 30px;
+    gap: 20px;
 }
 
 .hero-socials a {
-    color: var(--cinza-texto);
-    font-size: 28px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
     text-decoration: none;
-    transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    font-size: 20px;
+    transition: all 0.3s ease;
 }
 
 .hero-socials a:hover {
-    color: var(--laranja-dead);
-    transform: translateY(-5px) scale(1.1);
-    filter: drop-shadow(0 0 10px rgba(255, 107, 0, 0.6));
+    background: #00ffff;
+    color: #05070a;
+    border-color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    transform: translateY(-3px);
 }
 
 /* ==========================================================================
-   CLASSES DE ANIMAÇÃO
+   6. WIDGET DO DISCORD (COMPACTO - APENAS CABEÇALHO ROXO)
    ========================================================================== */
-@keyframes popIn {
-    0% { transform: scale(0.9); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+.discord-widget-card {
+    position: absolute;
+    bottom: 30px;
+    right: 5%;
+    background: rgba(11, 14, 20, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(88, 101, 242, 0.4);
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    width: 260px;
+    height: 85px;
 }
 
-@keyframes fadeInUp {
-    0% { transform: translateY(30px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
+.discord-widget-card iframe {
+    display: block;
+    border: none;
+    background: transparent;
+    width: 100%;
+    height: 150px;
+    margin-top: 0px;
+    pointer-events: auto;
 }
 
 /* ==========================================================================
-   MEDIA QUERY - AJUSTES PARA CELULAR E TABLETS
+   7. RESPONSIVIDADE
    ========================================================================== */
 @media (max-width: 768px) {
-    /* Navbar Mobile */
-    .navbar {
-        padding: 15px 20px;
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(5, 7, 10, 0.95);
+        backdrop-filter: blur(10px);
         flex-direction: column;
-        gap: 12px;
-    }
-
-    .logo {
-        font-size: 28px;
-        letter-spacing: 1px;
-    }
-
-    nav ul {
+        align-items: center;
+        padding: 20px 0;
         gap: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: none; 
     }
 
-    nav ul li a {
-        font-size: 13px;
-        letter-spacing: 0.5px;
+    .nav-list.active {
+        display: flex; 
     }
 
-    /* Hero Section Mobile */
-    .hero {
-        height: auto;
-        min-height: 100vh;
-        padding: 140px 0 60px 0; /* Espaço pro topo não cobrir conteúdo */
+    .discord-widget-card {
+        display: none; 
     }
 
     .hero-content h1 {
-        font-size: 68px; /* Título adaptado para caber na tela do celular */
-        letter-spacing: -1px;
-        margin-bottom: 15px;
+        font-size: 48px;
     }
 
     .hero-content p {
-        font-size: 16px;
-        margin-bottom: 35px;
-        padding: 0 10px;
-    }
-
-    /* Botões Mobile (Empilhados e fáceis de clicar) */
-    .hero-btns {
-        flex-direction: column;
-        width: 100%;
-        max-width: 280px;
-        margin: 0 auto;
-        gap: 12px;
-    }
-
-    .btn-hero {
-        width: 100%;
-        padding: 14px 0;
-        text-align: center;
-        font-size: 13px;
-        letter-spacing: 1px;
-    }
-    
-    .btn-hero:hover {
-        transform: translateY(-2px); /* Efeito suave no touch */
-    }
-
-    /* Redes Sociais Mobile */
-    .hero-socials {
-        margin-top: 35px;
-        gap: 25px;
-    }
-
-    .hero-socials a {
-        font-size: 24px;
+        font-size: 15px;
     }
 }

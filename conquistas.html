@@ -3,154 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEADPOINT | Títulos</title>
+    <title>DEADPOINT | Hall da Fama</title>
     <link rel="stylesheet" href="conquistas.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome CDN Oficial -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="conquistas-body">
 
-    <header>
+    <!-- Background com imagem de Hall da Fama do Google e sobreposição de opacidade -->
+    <div class="hero-victory-bg" style="background-image: linear-gradient(180deg, rgba(3, 5, 8, 0.75) 0%, rgba(3, 5, 8, 0.90) 80%, #030508 100%), radial-gradient(circle at 50% 25%, rgba(255, 0, 85, 0.15) 0%, transparent 60%), url('https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-attachment: fixed;"></div>
+    <div class="cyber-grid"></div>
+    <div class="watermark">GLORY</div>
+
+    <!-- NAVBAR -->
+    <header class="conquistas-header">
         <div class="navbar">
             <div class="logo">DEAD<span>POINT</span></div>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="lineup.html">Line-up</a></li>
-                    <li><a href="#" class="active">Títulos</a></li>
+                    <li><a href="conquistas.html" class="active">Títulos</a></li>
                     <li><a href="agenda.html">Agenda</a></li>
+                    <li><a href="recrutamento.html">Recrutamento</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="conquistas-container">
         
         <div class="page-header">
-            <span class="subtitle">Hall da Fama</span>
+            <span class="subtitle"><i class="fa-solid fa-award"></i> Hall da Fama</span>
             <h1>Nossa <span>Trajetória</span></h1>
             <div class="line-divider"></div>
-            <p class="summary-text">Onde o esforço se transforma em glória. Cada troféu carrega a história e a dedicação da LINE DEADPOINT no cenário competitivo.</p>
+            <p class="summary-text">Onde o esforço se transforma em glória. Cada troféu carrega a história, o sangue e a dedicação da LINE DEADPOINT no cenário competitivo.</p>
+            
+            <!-- Dica interativa sobre os títulos -->
+            <div class="interaction-tip">
+                <i class="fa-solid fa-circle-info"></i> <span>Clique em qualquer card de título abaixo para ver a descrição completa e a line-up que conquistou a vitória!</span>
+            </div>
+
+            <!-- Painel de Estatísticas Automático -->
+            <div class="stats-banner">
+                <div class="stat-item">
+                    <i class="fa-solid fa-trophy" style="color: #ffd700;"></i>
+                    <div>
+                        <span id="total-trofeus" class="stat-number">0</span>
+                        <span class="stat-label">Total de Troféus</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fa-solid fa-medal" style="color: #00ffff;"></i>
+                    <div>
+                        <span id="total-ouros" class="stat-number">0</span>
+                        <span class="stat-label">1º Lugares (Ouro)</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fa-solid fa-shield-halved" style="color: #c0c0c0;"></i>
+                    <div>
+                        <span id="total-pratas" class="stat-number">0</span>
+                        <span class="stat-label">2º Lugares (Prata)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Filtro -->
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filtrarTrofeus('all', event)">Todos os Títulos</button>
+                <button class="filter-btn" onclick="filtrarTrofeus('gold', event)"><i class="fa-solid fa-trophy"></i> Ouro (1º)</button>
+                <button class="filter-btn" onclick="filtrarTrofeus('silver', event)"><i class="fa-solid fa-medal"></i> Prata (2º)</button>
+            </div>
         </div>
 
-        <div class="trophy-grid">
+        <!-- Grade de Troféus -->
+        <div class="trophy-grid" id="trophy-grid">
             
-            <div class="trophy-card gold-tier">
+            <!-- 1º Ouro -->
+            <div class="trophy-card gold-tier" data-category="gold" onclick='abrirModal("Copa AFC", "Season 01", "1º LUGAR", "Desempenho impecável do início ao fim, garantindo o topo do pódio contra as principais equipes do cenário.", [
+                {nick: "DP MELI", role: "CAPITAO / GRANADEIR", foto: "mahel.png"},
+                {nick: "DP CORONA", role: "RUSH N2", foto: "corona.png"},
+                {nick: "DP DARK", role: "SUPORTE", foto: "yanick.png"},
+                {nick: "DP DEATH", role: "RUSH N1", foto: "neon.png"}
+            ])'>
                 <div class="trophy-badge">1º LUGAR</div>
-                <div class="trophy-icon-box">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
+                <div class="trophy-icon-box"><i class="fa-solid fa-trophy"></i></div>
                 <div class="trophy-info">
                     <h2>Copa AFC</h2>
                     <span class="tournament-tag">Season 01</span>
                     <p class="trophy-desc">Desempenho impecável do início ao fim, garantindo o topo do pódio.</p>
-                    <div class="trophy-footer">
-                        <span class="date"><i class="fa-regular fa-calendar"></i> Concluído</span>
-                    </div>
+                    <div class="trophy-footer"><span class="date"><i class="fa-regular fa-calendar"></i> Concluído • Clique p/ Line</span></div>
                 </div>
             </div>
 
-            <div class="trophy-card gold-tier">
+            <!-- 2º Ouro -->
+            <div class="trophy-card gold-tier" data-category="gold" onclick='abrirModal("Liga Nestum", "Season 02", "1º LUGAR", "Domínio tático absoluto consagrando nossa line-up como campeã da temporada com recorde de abates.", [
+                {nick: "DP MELI", role: "CAPITAO / GRANADEIRO", foto: "mahel.png"},
+                {nick: "DP CORONA", role: "RUSH N2", foto: "corona.png"},
+                {nick: "DP DARK", role: "SUPORTE", foto: "yanick.png"},
+                {nick: "DP MATEUS", role: "RUSH N1", foto: "neon.png"}
+            ])'>
                 <div class="trophy-badge">1º LUGAR</div>
-                <div class="trophy-icon-box">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
+                <div class="trophy-icon-box"><i class="fa-solid fa-trophy"></i></div>
                 <div class="trophy-info">
                     <h2>Liga Nestum</h2>
                     <span class="tournament-tag">Season 02</span>
                     <p class="trophy-desc">Domínio tático absoluto consagrando nossa line-up como campeã da temporada.</p>
-                    <div class="trophy-footer">
-                        <span class="date"><i class="fa-regular fa-calendar"></i> Concluído</span>
-                    </div>
+                    <div class="trophy-footer"><span class="date"><i class="fa-regular fa-calendar"></i> Concluído • Clique p/ Line</span></div>
                 </div>
             </div>
 
-            <div class="trophy-card gold-tier">
+            <!-- 3º Ouro -->
+            <div class="trophy-card gold-tier" data-category="gold" onclick='abrirModal("Liga Nestum", "Season 03", "1º LUGAR", "O bicampeonato consecutivo que provou a nossa constância e soberania na liga.", [
+                {nick: "DP MELI", role: "CAPITAO / GRANADEIRO", foto: "mahel.png"},
+                {nick: "DP CORONA", role: "RUSH N2", foto: "corona.png"},
+                {nick: "DP DARK", role: "SUPORTE", foto: "yanick.png"},
+                {nick: "DP MATEUS", role: "RUSH N1", foto: "neon.png"}
+            ])'>
                 <div class="trophy-badge">1º LUGAR</div>
-                <div class="trophy-icon-box">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
+                <div class="trophy-icon-box"><i class="fa-solid fa-trophy"></i></div>
                 <div class="trophy-info">
                     <h2>Liga Nestum</h2>
                     <span class="tournament-tag">Season 03</span>
                     <p class="trophy-desc">O bicampeonato consecutivo que provou a nossa constância e soberania na liga.</p>
-                    <div class="trophy-footer">
-                        <span class="date"><i class="fa-regular fa-calendar"></i> Concluído</span>
-                    </div>
+                    <div class="trophy-footer"><span class="date"><i class="fa-regular fa-calendar"></i> Concluído • Clique p/ Line</span></div>
                 </div>
             </div>
 
-            <div class="trophy-card gold-tier">
+            <!-- 4º Ouro -->
+            <div class="trophy-card gold-tier" data-category="gold" onclick='abrirModal("Liga CBK (4X4)", "Season 01", "1º LUGAR", "Vitória dominante na modalidade contra os elencos mais rápidos do cenário.", [
+                {nick: "DP MELI", role: "CAPITAO / GRANADEIRO", foto: "mahel.png"},
+                {nick: "DP CORONA", role: "RUSH N2", foto: "corona.png"},
+                {nick: "DP DARK", role: "SUPORTE", foto: "yanick.png"},
+                {nick: "DP MATEUS", role: "RUSH N1", foto: "neon.png"}
+            ])'>
                 <div class="trophy-badge">1º LUGAR</div>
-                <div class="trophy-icon-box">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
+                <div class="trophy-icon-box"><i class="fa-solid fa-trophy"></i></div>
                 <div class="trophy-info">
                     <h2>Liga CBK (4X4)</h2>
                     <span class="tournament-tag">Season 01</span>
                     <p class="trophy-desc">Vitória dominante na modalidade contra os elencos mais rápidos do cenário.</p>
-                    <div class="trophy-footer">
-                        <span class="date"><i class="fa-regular fa-calendar"></i> Concluído</span>
-                    </div>
+                    <div class="trophy-footer"><span class="date"><i class="fa-regular fa-calendar"></i> Concluído • Clique p/ Line</span></div>
                 </div>
             </div>
 
-            <div class="trophy-card gold-tier">
+            <!-- 5º Ouro -->
+            <div class="trophy-card gold-tier" data-category="gold" onclick='abrirModal("Copa All In", "Season 4", "1º LUGAR", "Jogadas de alto nível e consistência que garantiram mais um grande troféu.", [
+                {nick: "DP WARLOCK", role: "CAPITAO / GRANADEIRO", foto: "warlock.png"},
+                {nick: "DP CORONA", role: "RUSH N2", foto: "corona.png"},
+                {nick: "DP NEON", role: "SUPORTE", foto: "neon.png"},
+                {nick: "DP BZP", role: "RUSH N1", foto: "bzp.png"}
+            ])'>
                 <div class="trophy-badge">1º LUGAR</div>
-                <div class="trophy-icon-box">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
+                <div class="trophy-icon-box"><i class="fa-solid fa-trophy"></i></div>
                 <div class="trophy-info">
                     <h2>Copa All In</h2>
                     <span class="tournament-tag">Season 4</span>
                     <p class="trophy-desc">Jogadas de alto nível e consistência que garantiram mais um grande troféu.</p>
-                    <div class="trophy-footer">
-                        <span class="date"><i class="fa-regular fa-calendar"></i> Concluído</span>
-                    </div>
+                    <div class="trophy-footer"><span class="date"><i class="fa-regular fa-calendar"></i> Concluído • Clique p/ Line</span></div>
                 </div>
             </div>
 
-            <div class="trophy-card silver-tier">
+            <!-- 1º Prata -->
+            <div class="trophy-card silver-tier" data-category="silver" onclick='abrirModal("Copa Corona (4X4)", "Season 01", "2º LUGAR", "Disputa acirrada ponto a ponto até os últimos segundos da grande final.", [
+                {nick: "DP MELI", role: "CAPITAO / GRANADEIRO", foto: "mahel.png"},
+                {nick: "DP CORONA", role: "RUSH N2", foto: "corona.png"},
+                {nick: "DP DARK", role: "SUPORTE", foto: "yanick.png"},
+                {nick: "DP MATEUS", role: "RUSH N1", foto: "neon.png"}
+            ])'>
                 <div class="trophy-badge">2º LUGAR</div>
-                <div class="trophy-icon-box">
-                    <i class="fa-solid fa-medal"></i>
-                </div>
+                <div class="trophy-icon-box"><i class="fa-solid fa-medal"></i></div>
                 <div class="trophy-info">
                     <h2>Copa Corona (4X4)</h2>
                     <span class="tournament-tag">Season 01</span>
                     <p class="trophy-desc">Disputa acirrada ponto a ponto até os últimos segundos da grande final.</p>
-                    <div class="trophy-footer">
-                        <span class="date"><i class="fa-regular fa-calendar"></i> Concluído</span>
-                    </div>
+                    <div class="trophy-footer"><span class="date"><i class="fa-regular fa-calendar"></i> Concluído • Clique p/ Line</span></div>
                 </div>
             </div>
 
-            <div class="trophy-card silver-tier">
+            <!-- 2º Prata -->
+            <div class="trophy-card silver-tier" data-category="silver" onclick='abrirModal("Copa CVC", "Season 01", "2º LUGAR", "Excelente leitura de jogo que nos garantiu o topo da tabela e o vice-campeonato.", [
+                {nick: "DP MELI", role: "CAPITAO / GRANADEIRO", foto: "mahel.png"},
+                {nick: "DP CORONA", role: "RUSH N2", foto: "corona.png"},
+                {nick: "DP DARK", role: "SUPORTE", foto: "yanick.png"},
+                {nick: "DP MATEUS", role: "RUSH N1", foto: "neon.png"}
+            ])'>
                 <div class="trophy-badge">2º LUGAR</div>
-                <div class="trophy-icon-box">
-                    <i class="fa-solid fa-medal"></i>
-                </div>
+                <div class="trophy-icon-box"><i class="fa-solid fa-medal"></i></div>
                 <div class="trophy-info">
                     <h2>Copa CVC</h2>
                     <span class="tournament-tag">Season 01</span>
                     <p class="trophy-desc">Excelente leitura de jogo que nos garantiu o topo da tabela e o vice-campeonato.</p>
-                    <div class="trophy-footer">
-                        <span class="date"><i class="fa-regular fa-calendar"></i> Concluído</span>
-                    </div>
+                    <div class="trophy-footer"><span class="date"><i class="fa-regular fa-calendar"></i> Concluído • Clique p/ Line</span></div>
                 </div>
             </div>
 
-            <div class="trophy-card silver-tier">
+            <!-- 3º Prata -->
+            <div class="trophy-card silver-tier" data-category="silver" onclick='abrirModal("Copa Corona (BR)", "Season 01", "2º LUGAR", "Grande campanha na modalidade Battle Royale, demonstrando nossa versatilidade.", [
+                {nick: "DP MELI", role: "CAPITAO / GRANADEIRO", foto: "mahel.png"},
+                {nick: "DP CORONA", role: "RUSH N2", foto: "corona.png"},
+                {nick: "DP DARK", role: "SUPORTE", foto: "yanick.png"},
+                {nick: "DP MATEUS", role: "RUSH N1", foto: "neon.png"}
+            ])'>
                 <div class="trophy-badge">2º LUGAR</div>
-                <div class="trophy-icon-box">
-                    <i class="fa-solid fa-medal"></i>
-                </div>
+                <div class="trophy-icon-box"><i class="fa-solid fa-medal"></i></div>
                 <div class="trophy-info">
                     <h2>Copa Corona (BR)</h2>
                     <span class="tournament-tag">Season 01</span>
-                    <p class="trophy-desc">Grande campanha na modalidade Battle Royale, demonstrando nossa versatilidade de jogo.</p>
-                    <div class="trophy-footer">
-                        <span class="date"><i class="fa-regular fa-calendar"></i> Concluído</span>
-                    </div>
+                    <p class="trophy-desc">Grande campanha na modalidade Battle Royale, demonstrando nossa versatilidade.</p>
+                    <div class="trophy-footer"><span class="date"><i class="fa-regular fa-calendar"></i> Concluído • Clique p/ Line</span></div>
                 </div>
             </div>
 
@@ -158,5 +222,104 @@
 
     </main>
 
+    <!-- MODAL DE DETALHES E LINE-UP PARTICIPANTE -->
+    <div class="modal-overlay" id="modal-conquista">
+        <div class="modal-content">
+            <button class="modal-close" onclick="fecharModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header-info">
+                <span id="modal-badge" class="modal-badge">1º LUGAR</span>
+                <h2 id="modal-titulo">Nome do Torneio</h2>
+                <span id="modal-tag" class="modal-tag">Season 01</span>
+                <p id="modal-desc">Descrição detalhada do torneio...</p>
+            </div>
+
+            <div class="modal-lineup-section">
+                <h3><i class="fa-solid fa-users"></i> Line-up Participante 
+                    <span class="modal-player-tip" style="font-size: 0.75rem; color: #00ffff; font-weight: normal; margin-left: 10px;">
+                        <i class="fa-solid fa-hand-pointer"></i> Passe o mouse nos cards para ver o Nick e a Função
+                    </span>
+                </h3>
+                <div class="modal-players-grid" id="modal-players-grid">
+                    <!-- Os cards dos players entram dinamicamente via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE FILTRAGEM, CONTADORES E MODAL -->
+    <script>
+        function inicializarHallDaFama() {
+            const cards = document.querySelectorAll('.trophy-card');
+            let ouros = 0;
+            let pratas = 0;
+
+            cards.forEach(card => {
+                if (card.classList.contains('gold-tier')) ouros++;
+                if (card.classList.contains('silver-tier')) pratas++;
+            });
+
+            document.getElementById('total-trofeus').innerText = cards.length;
+            document.getElementById('total-ouros').innerText = ouros;
+            document.getElementById('total-pratas').innerText = pratas;
+        }
+
+        function filtrarTrofeus(categoria, event) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const cards = document.querySelectorAll('.trophy-card');
+
+            cards.forEach(card => {
+                const catCard = card.getAttribute('data-category');
+                if (categoria === 'all' || catCard === categoria) {
+                    card.style.display = "flex";
+                    setTimeout(() => card.style.opacity = "1", 50);
+                } else {
+                    card.style.opacity = "0";
+                    setTimeout(() => card.style.display = "none", 300);
+                }
+            });
+        }
+
+        function abrirModal(titulo, season, badge, desc, players) {
+            document.getElementById('modal-titulo').innerText = titulo;
+            document.getElementById('modal-tag').innerText = season;
+            document.getElementById('modal-badge').innerText = badge;
+            document.getElementById('modal-desc').innerText = desc;
+
+            const grid = document.getElementById('modal-players-grid');
+            grid.innerHTML = '';
+
+            players.forEach(p => {
+                const playerCard = document.createElement('div');
+                playerCard.className = 'player-hover-card';
+                playerCard.innerHTML = `
+                    <div class="player-photo-container">
+                        <img src="${p.foto}" alt="${p.nick}">
+                    </div>
+                    <div class="player-details-reveal">
+                        <span class="player-nick">${p.nick}</span>
+                        <span class="player-role">${p.role}</span>
+                    </div>
+                `;
+                grid.appendChild(playerCard);
+            });
+
+            document.getElementById('modal-conquista').classList.add('active');
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-conquista').classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-conquista');
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+
+        window.onload = inicializarHallDaFama;
+    </script>
 </body>
 </html>

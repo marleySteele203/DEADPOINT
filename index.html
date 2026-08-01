@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEADPOINT | E-Sports Team</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Ícones gratuitos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Ícones Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
@@ -14,8 +14,14 @@
     <header>
         <div class="navbar">
             <div class="logo">DEAD<span>POINT</span></div>
+            
+            <!-- Menu Hambúrguer para Celular -->
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
             <nav>
-                <ul>
+                <ul class="nav-list">
                     <li><a href="#" class="active">Home</a></li>
                     <li><a href="lineup.html">Line-up</a></li>
                     <li><a href="conquistas.html">Títulos</a></li>
@@ -40,22 +46,44 @@
             <h1 class="animate-pop">DEAD<span>POINT</span></h1>
             <p class="animate-fade">A mira é certa, o ponto é morto. Dominando o cenário competitivo com precisão absoluta.</p>
             
-            <!-- Botões de Ação (Apenas os originais) -->
+            <!-- Botões de Ação -->
             <div class="hero-btns animate-fade">
                 <a href="lineup.html" class="btn-hero primary">Conheça a Line</a>
                 <a href="agenda.html" class="btn-hero secondary">Próximos Jogos</a>
                 <a href="recrutamento.html" class="btn-hero recruitment">Recrutamento</a>
             </div>
 
-            <!-- Links de Redes Sociais (Instagram, TikTok e Discord juntos) -->
+            <!-- Links de Redes Sociais -->
             <div class="hero-socials animate-fade">
                 <a href="https://www.instagram.com/_dead_point_" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
                 <a href="https://www.tiktok.com/@deadpointdp" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-                <!-- Link do Discord no mesmo padrão visual -->
                 <a href="https://discord.gg/6eqAbqm289" target="_blank" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
             </div>
         </div>
+
+        <!-- WIDGET DO DISCORD (Compacto - Apenas Cabeçalho Online) -->
+        <div class="discord-widget-card animate-fade">
+            <iframe src="https://discord.com/widget?id=1454568938385051805&theme=dark" 
+                    width="260" 
+                    height="85" 
+                    allowtransparency="true" 
+                    frameborder="0" 
+                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+            </iframe>
+        </div>
     </section>
 
+    <!-- SCRIPT PARA O MENU MOBILE -->
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.querySelector('.nav-list');
+
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            const icon = mobileMenu.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        });
+    </script>
 </body>
 </html>

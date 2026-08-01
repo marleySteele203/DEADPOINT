@@ -4,194 +4,228 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEADPOINT | Cronograma de Operações</title>
-    <link rel="stylesheet" href="agenda.css">
+    <!-- Fonte do Line-up: Rajdhani -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Externo -->
+    <link rel="stylesheet" href="agenda.css">
 </head>
 <body>
 
-    <div class="hud-scanlines"></div>
+    <!-- MARCA D'ÁGUA DO LINE-UP -->
+    <div class="watermark">DEADPOINT</div>
 
+    <!-- HEADER / NAVBAR -->
     <header>
         <div class="navbar">
             <div class="logo">DEAD<span>POINT</span></div>
             <nav>
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="lineup.html">Line-up</a></li>
-                    <li><a href="conquistas.html">Títulos</a></li>
-                    <li><a href="#" class="active">Agenda</a></li>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="lineup.html">LINE-UP</a></li>
+                    <li><a href="conquistas.html">TÍTULOS</a></li>
+                    <li><a href="#" class="active">AGENDA</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="hud-container">
         
+        <!-- HEADER TERMINAL -->
         <div class="terminal-header">
-            <div class="sys-status"></div>
-            <h1> CRONOGRAMA DE OPERAÇÕES</h1>
-            <p class="crypto-sub">Diretrizes ativas, agendamentos táticos e arquivos de missões.</p>
+            <div class="sys-status">
+                <span class="pulse-dot"></span>
+                <span>SYS_ONLINE // MÓDULO DE CRONOGRAMA</span>
+                <span class="hud-clock" id="live-clock">00:00:00 CAT</span>
+            </div>
+            <h1>CRONOGRAMA DE OPERAÇÕES</h1>
+            <p class="crypto-sub">Diretrizes ativas, agendamentos táticos e arquivos de missões da DEADPOINT.</p>
         </div>
 
-        <div class="hud-filters">
-            <button class="filter-btn active" onclick="filtrarAgenda('ALL', event)">[ ALL_OPS ]</button>
-            <button class="filter-btn" onclick="filtrarAgenda('CAMPEONATO', event)">[ CAMPEONATOS ]</button>
-            <button class="filter-btn" onclick="filtrarAgenda('TREINO', event)">[ SCRIMS ]</button>
-            <button class="filter-btn" onclick="filtrarAgenda('LIVE', event)">[ LIVES ]</button>
+        <!-- BARRA DE FILTROS DA AGENDA (SEM BUSCA) -->
+        <div class="hud-controls-bar">
+            <div class="hud-filters">
+                <button class="filter-btn active" data-filter="ALL" onclick="setFiltroTipo('ALL', event)">[ ALL_OPS ]</button>
+                <button class="filter-btn" data-filter="CAMPEONATO" onclick="setFiltroTipo('CAMPEONATO', event)">[ CAMPEONATOS ]</button>
+                <button class="filter-btn" data-filter="TREINO" onclick="setFiltroTipo('TREINO', event)">[ SCRIMS ]</button>
+                <button class="filter-btn" data-filter="LIVE" onclick="setFiltroTipo('LIVE', event)">[ LIVES ]</button>
+            </div>
         </div>
 
-        <!-- LISTA PRINCIPAL (ATIVOS / AGUARDANDO) -->
-        <div id="agenda-entries" class="agenda-list"></div>
+        <!-- OPERAÇÕES ATIVAS & AGENDADAS -->
+        <section class="section-block">
+            <div class="section-title-tag">
+                <i class="fa-solid fa-radar"></i> OPERAÇÕES ATIVAS & AGENDADAS
+            </div>
+            <div id="agenda-entries" class="agenda-list"></div>
+        </section>
 
-        <!-- SEÇÃO DA LIXEIRA / ARQUIVO MORTO -->
-        <div class="trash-section-wrapper">
+        <!-- ARQUIVO DE OPERAÇÕES CONCLUÍDAS -->
+        <section class="trash-section-wrapper">
             <div class="trash-header">
-                <h2><i class="fa-solid fa-trash-can"></i> [ ARQUIVO DE OPERAÇÕES CONCLUÍDAS ]</h2>
-                <p>Histórico de missões finalizadas pelo comando.</p>
+                <h2><i class="fa-solid fa-box-archive"></i> [ ARQUIVO DE OPERAÇÕES CONCLUÍDAS ]</h2>
+                <p>Histórico e registro tático de missões finalizadas pelo comando.</p>
             </div>
             <div id="agenda-trash" class="agenda-list trash-mode"></div>
-        </div>
+        </section>
 
     </main>
 
+    <!-- LÓGICA DA AGENDA -->
     <script>
-        // MOCK DATA ATUALIZADA (Inclui links do TikTok das organizadoras)
         const eventosDaOrganização = [
-            {
-                id: "evt_01",
-                tipo: "CAMPEONATO", 
-                titulo: "ARE LEAGUE",
-                descricao: "Quedas decisivas da fase de grupos. Transmissão oficial nos canais da liga.",
-                dataIso: "2026-06-27",
-                dataFimIso: "2026-08-01",
-                hora: "21:10 CAT",
-                premiacao: "$100 USD",
-                pais: "Africa Do Sul",
-                tiktokUrl: "https://www.tiktok.com/@african_rise9" // Substitua pelo link correto
-            },
             {
                 id: "evt_02",
                 tipo: "CAMPEONATO",
-                titulo: "COPA ENIGMA X BATATA.DOCE",
-                descricao: "Quedas decisivas da fase de grupos. Transmissão oficial nos canais da copa.",
-                dataIso: "2026-06-13",
-                dataFimIso: "2026-08-01",
-                hora: "19:00 CAT",
-                premiacao: "5000 MTS",
-                pais: "Mocambique",
-                tiktokUrl: "https://www.tiktok.com/@enigma..mz" // Substitua pelo link correto
+                titulo: "FREE FIRE WORLD SERIES - FFWS",
+                descricao: "Qualificatórias oficiais para EWC. Monitoramento máximo de desempenho da equipe principal.",
+                dataIso: "2026-07-20",
+                dataFimIso: "2026-08-30",
+                hora: "18:45",
+                tz: "CAT",
+                premiacao: "$10,000",
+                pais: "ÁFRICA - MENA",
+                tiktokUrl: "https://www.tiktok.com/@garenafreefire.ssa"
             },
             {
                 id: "evt_03",
                 tipo: "CAMPEONATO",
-                titulo: "Nacional Angolano",
-                descricao: "Transmissão ao vivo no tiktok e youtube mostrando o POV da line principal e abertura de vagas.",
-                dataIso: "2026-06-04", 
-                dataFimIso: "2026-07-25",
-                hora: "21:00 CAT",
-                premiacao: "Vaga",
-                pais: "Angola",
-                tiktokUrl: "https://www.tiktok.com/@meridian_esports" // Substitua pelo link correto
+                titulo: "NGLA SERIES",
+                descricao: "Transmissão ao vivo mostrando o POV oficial e comunicação de voz da Line-up principal.",
+                dataIso: "2026-09-01", 
+                dataFimIso: "2026-09-30",
+                hora: "21:00",
+                tz: "CAT",
+                premiacao: "$400",
+                pais: "10 REGIONS - AFRICA",
+                tiktokUrl: "https://www.tiktok.com/@meridian_esports"
             }
         ];
 
-        function formatarDataBr(dataIso) {
-            const [ano, mes, dia] = dataIso.split('-');
-            return `${dia}/${mes}/${ano}`;
+        let filtroAtual = 'ALL';
+
+        function atualizarRelogio() {
+            const agora = new Date();
+            const clockEl = document.getElementById('live-clock');
+            if (clockEl) {
+                clockEl.textContent = `${agora.toLocaleTimeString('pt-BR')} CAT`;
+            }
         }
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
 
         function gerarLinkGoogleCalendar(evento) {
-            const dataLimpa = evento.dataIso.replace(/-/g, '');
-            const horaLimpa = evento.hora.split(' ')[0].replace(/:/g, '') + '00';
-            return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('DEADPOINT | ' + evento.titulo)}&dates=${dataLimpa}T${horaLimpa}/${dataLimpa}T${parseInt(horaLimpa)+20000}&details=${encodeURIComponent(evento.descricao)}`;
+            const [ano, mes, dia] = evento.dataIso.split('-');
+            const [hora, min] = evento.hora.split(':');
+            
+            const start = new Date(Date.UTC(ano, mes - 1, dia, hora, min));
+            const end = new Date(start.getTime() + (2 * 60 * 60 * 1000));
+
+            const fmt = d => d.toISOString().replace(/-|:|\.\d\d\d/g, '');
+            const title = encodeURIComponent(`DEADPOINT | ${evento.titulo}`);
+            const details = encodeURIComponent(evento.descricao);
+
+            return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(start)}/${fmt(end)}&details=${details}`;
         }
 
         function calcularStatusEAlocacao(evento) {
             const hoje = new Date();
-            hoje.setHours(0, 0, 0, 0);
+            const [anoI, mesI, diaI] = evento.dataIso.split('-').map(Number);
+            const [anoF, mesF, diaF] = evento.dataFimIso.split('-').map(Number);
+            const [hora, min] = evento.hora.split(':').map(Number);
 
-            const [anoI, mesI, diaI] = evento.dataIso.split('-');
-            const [anoF, mesF, diaF] = evento.dataFimIso.split('-');
-            
-            const dataInicio = new Date(anoI, mesI - 1, diaI);
-            const dataFim = new Date(anoF, mesF - 1, diaF);
-            dataFim.setHours(23, 59, 59, 999);
+            const dataInicio = new Date(anoI, mesI - 1, diaI, hora, min);
+            const dataFim = new Date(anoF, mesF - 1, diaF, 23, 59, 59);
 
             if (hoje > dataFim) {
-                return { status: "CONCLUÍDO", classe: "status-ended", dot: "status-dead", alvo: "LIXEIRA" };
-            } else if (hoje >= dataInicio && hoje <= dataFim) {
-                return { status: "EM ANDAMENTO", classe: "status-live-now", dot: "status-live", alvo: "PRINCIPAL" };
-            } else {
-                return { status: "AGUARDANDO", classe: "status-waiting", dot: "status-ok", alvo: "PRINCIPAL" };
-            }
+                return { status: "CONCLUÍDO", classe: "status-ended", dot: "status-dead", alvo: "LIXEIRA", countdown: "FINALIZADA" };
+            } 
+            
+            if (hoje >= dataInicio && hoje <= dataFim) {
+                return { status: "EM ANDAMENTO", classe: "status-live-now", dot: "status-live", alvo: "PRINCIPAL", countdown: "AO VIVO AGORA" };
+            } 
+
+            const diffMs = dataInicio - hoje;
+            const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const diffHoras = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+            const countdownText = `INICIA EM: ${diffDias}D ${diffHoras}H`;
+
+            return { status: "AGUARDANDO", classe: "status-waiting", dot: "status-ok", alvo: "PRINCIPAL", countdown: countdownText };
         }
 
-        function renderizarAgenda(eventos, filtro = 'ALL') {
+        const ICONES_TIPO = {
+            CAMPEONATO: { icon: "fa-solid fa-trophy", tag: "tag-championship" },
+            TREINO: { icon: "fa-solid fa-crosshairs", tag: "tag-scrim" },
+            LIVE: { icon: "fa-solid fa-tv", tag: "tag-live" }
+        };
+
+        function renderizarAgenda() {
             const containerPrincipal = document.getElementById('agenda-entries');
             const containerLixeira = document.getElementById('agenda-trash');
-            
-            containerPrincipal.innerHTML = ''; 
-            containerLixeira.innerHTML = ''; 
 
-            const eventosFiltrados = filtro === 'ALL' ? eventos : eventos.filter(e => e.tipo === filtro);
+            let htmlPrincipal = '';
+            let htmlLixeira = '';
 
-            let ativosContador = 0;
-            let arquivadosContador = 0;
+            const eventosFiltrados = eventosDaOrganização.filter(e => {
+                return (filtroAtual === 'ALL' || e.tipo === filtroAtual);
+            });
 
             eventosFiltrados.forEach(evento => {
-                let iconClass = "fa-solid fa-crosshairs";
-                let typeClass = "tag-default";
-                
-                if (evento.tipo === "CAMPEONATO") { iconClass = "fa-solid fa-trophy"; typeClass = "tag-championship"; }
-                else if (evento.tipo === "TREINO") { iconClass = "fa-solid fa-gun"; typeClass = "tag-scrim"; }
-                else if (evento.tipo === "LIVE") { iconClass = "fa-solid fa-tv"; typeClass = "tag-live"; }
-
+                const configTipo = ICONES_TIPO[evento.tipo] || { icon: "fa-solid fa-crosshairs", tag: "tag-default" };
                 const infoStatus = calcularStatusEAlocacao(evento);
-                const googleCalendarUrl = gerarLinkGoogleCalendar(evento);
+                const googleUrl = gerarLinkGoogleCalendar(evento);
 
-                const periodoDatas = evento.dataIso === evento.dataFimIso 
-                    ? formatarDataBr(evento.dataIso)
-                    : `${formatarDataBr(evento.dataIso)} até ${formatarDataBr(evento.dataFimIso)}`;
-
-                // Valida se o evento possui link do tiktok, senão deixa um link padrão ou hashtag
-                const tiktokLink = evento.tiktokUrl ? evento.tiktokUrl : "https://www.tiktok.com/";
+                const dataIniFmt = new Date(evento.dataIso + 'T00:00:00').toLocaleDateString('pt-BR');
+                const dataFimFmt = new Date(evento.dataFimIso + 'T00:00:00').toLocaleDateString('pt-BR');
+                const periodo = evento.dataIso === evento.dataFimIso ? dataIniFmt : `${dataIniFmt} — ${dataFimFmt}`;
 
                 const cardHTML = `
                     <div class="agenda-row ${infoStatus.alvo === 'LIXEIRA' ? 'archived-card' : ''}" data-id="${evento.id}">
                         <div class="row-left">
-                            <div class="icon-box-hud"><i class="${iconClass}"></i></div>
+                            <div class="icon-box-hud">
+                                <i class="${configTipo.icon}"></i>
+                            </div>
                             <div class="event-details">
                                 <div class="tag-row-wrapper">
-                                    <span class="event-type-tag ${typeClass}">${evento.tipo}</span>
-                                    <span class="event-geo-tag"><i class="fa-solid fa-earth-americas"></i> ${evento.pais}</span>
+                                    <span class="event-type-tag ${configTipo.tag}">${evento.tipo}</span>
+                                    <span class="event-geo-tag"><i class="fa-solid fa-earth-africa"></i> ${evento.pais}</span>
+                                    <span class="countdown-badge"><i class="fa-solid fa-stopwatch"></i> ${infoStatus.countdown}</span>
                                 </div>
                                 <h2>${evento.titulo}</h2>
                                 <p>${evento.descricao}</p>
                                 <div class="hud-extra-info">
-                                    <span><i class="fa-solid fa-award"></i> Premiação: <strong>${evento.premiacao}</strong></span>
+                                    <span><i class="fa-solid fa-award"></i> PREMIAÇÃO: <strong>${evento.premiacao}</strong></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row-right">
                             <div class="time-block">
-                                <div class="time-item"><i class="fa-regular fa-calendar"></i> ${periodoDatas}</div>
-                                <div class="time-item"><i class="fa-regular fa-clock"></i> ${evento.hora}</div>
+                                <div class="time-item"><i class="fa-regular fa-calendar-days"></i> ${periodo}</div>
+                                <div class="time-item"><i class="fa-regular fa-clock"></i> ${evento.hora} ${evento.tz}</div>
                             </div>
                             <div class="action-block-hud">
-                                <!-- BOTÃO DO TIKTOK DA ORGANIZADORA -->
-                                <a href="${tiktokLink}" target="_blank" class="btn-tiktok-organizador" title="TikTok da Organizadora" style="margin-right: 5px;">
+                                <a href="${evento.tiktokUrl || '#'}" target="_blank" class="btn-action btn-tiktok" title="TikTok Oficial do Organizador" aria-label="TikTok Oficial">
                                     <i class="fa-brands fa-tiktok"></i>
                                 </a>
 
                                 ${infoStatus.alvo === 'PRINCIPAL' ? `
-                                    <a href="${googleCalendarUrl}" target="_blank" class="btn-sync-calendar" title="Adicionar à minha Agenda">
+                                    <a href="${googleUrl}" target="_blank" class="btn-action btn-calendar" title="Sincronizar no Google Agenda" aria-label="Sincronizar no Google Agenda">
                                         <i class="fa-solid fa-calendar-plus"></i>
                                     </a>
+                                    <button class="btn-action btn-notify" onclick="solicitarNotificacao('${evento.titulo}')" title="Ativar Alerta do Navegador" aria-label="Ativar Notificações">
+                                        <i class="fa-regular fa-bell"></i>
+                                    </button>
                                 ` : `
-                                    <span class="btn-sync-calendar disabled-btn" title="Missão Encerrada">
+                                    <span class="btn-action disabled-btn" title="Operação Concluída">
                                         <i class="fa-solid fa-box-archive"></i>
                                     </span>
                                 `}
+
                                 <div class="status-block ${infoStatus.classe}">
                                     <span class="indicator-dot ${infoStatus.dot}"></span>
                                     <span class="status-text">${infoStatus.status}</span>
@@ -202,33 +236,38 @@
                 `;
 
                 if (infoStatus.alvo === "PRINCIPAL") {
-                    containerPrincipal.innerHTML += cardHTML;
-                    ativosContador++;
+                    htmlPrincipal += cardHTML;
                 } else {
-                    containerLixeira.innerHTML += cardHTML;
-                    arquivadosContador++;
+                    htmlLixeira += cardHTML;
                 }
             });
 
-            if (ativosContador === 0) {
-                containerPrincipal.innerHTML = `<div class="no-events-alert">// NENHUMA OPERAÇÃO ATIVA OU AGUARDANDO NESTE SETOR</div>`;
-            }
-            if (arquivadosContador === 0) {
-                containerLixeira.innerHTML = `<div class="no-events-alert" style="opacity: 0.5;">// HISTÓRICO LIMPO. NENHUMA OPERAÇÃO ARQUIVADA.</div>`;
-            }
+            containerPrincipal.innerHTML = htmlPrincipal || `<div class="no-events-alert">// NENHUMA OPERAÇÃO ENCONTRADA NESTA CATEGORIA</div>`;
+            containerLixeira.innerHTML = htmlLixeira || `<div class="no-events-alert" style="opacity: 0.5;">// HISTÓRICO LIMPO. NENHUMA OPERAÇÃO ARQUIVADA.</div>`;
         }
 
-        function filtrarAgenda(tipo, event) {
-            const botoes = document.querySelectorAll('.filter-btn');
-            botoes.forEach(btn => btn.classList.remove('active'));
+        function setFiltroTipo(tipo, event) {
+            document.querySelectorAll('.hud-filters .filter-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-
-            renderizarAgenda(eventosDaOrganização, tipo);
+            filtroAtual = tipo;
+            renderizarAgenda();
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            renderizarAgenda(eventosDaOrganização);
-        });
+        function solicitarNotificacao(titulo) {
+            if (!("Notification" in window)) {
+                alert("Navegador não suporta alertas táticos.");
+                return;
+            }
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("DEADPOINT | Lembrete de Operação", {
+                        body: `Alerta ativo para: ${titulo}`
+                    });
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", renderizarAgenda);
     </script>
 </body>
 </html>
