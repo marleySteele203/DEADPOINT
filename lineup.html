@@ -1,609 +1,417 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>DEADPOINT | Line-up</title>
+
     <link rel="stylesheet" href="lineup.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Biblioteca de bandeiras SVG -->
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
+
 </head>
+
 <body>
+
+
 
     <div id="bg-watermark" class="watermark">DP MELI</div>
 
+
+
     <header>
+
         <div class="navbar">
+
             <div class="logo">DEAD<span>POINT</span></div>
+
             <nav>
+
                 <ul>
+
                     <li><a href="index.html">Home</a></li>
+
                     <li><a href="#" class="active">Line-up</a></li>
+
                     <li><a href="conquistas.html">Títulos</a></li>
+
                     <li><a href="agenda.html">Agenda</a></li>
+
                 </ul>
+
             </nav>
+
         </div>
+
     </header>
 
+
+
     <main class="slider-container" id="slider-zone">
-        
+
+       
+
         <button class="nav-btn prev-btn" aria-label="Jogador Anterior" onclick="changePlayer(-1)">
+
             <i class="fa-solid fa-chevron-left"></i>
+
         </button>
 
+
+
         <div class="player-showcase" id="player-showcase">
-            
+
+           
+
             <div class="player-image-side" id="player-img-container" style="--role-color-primary: #00ffff; --role-color-secondary: #ff0055;">
+
                 <img id="player-img" src="mahel.png" alt="Player" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/0b0e14/ffffff?text=DEADPOINT';">
+
                 <div class="role-badge" id="player-role">SNIPER / CEO</div>
+
             </div>
+
+
 
             <div class="player-info-side">
+
                 <div class="player-meta-header">
+
                     <span class="line-tag">Roster Oficial</span>
+
                     <span class="country-badge" id="player-country"><span class="fi fi-mz"></span> Moçambique</span>
+
                 </div>
+
+
 
                 <h1 id="player-nick">DP MELI</h1>
+
                 <h3 id="player-name">MARLEY STEELE</h3>
-                
+
+               
+
                 <p class="player-bio" id="player-bio">Responsável pela estratégia, chamadas de call decisivas e coordenação da equipe em direção ao topo do cenário.</p>
 
+
+
                 <div class="player-actions">
+
                     <button class="btn-stats" id="btn-stats-id" onclick="toggleStatsModal(true)">
+
                         <i class="fa-solid fa-chart-simple"></i> Estatísticas
-                    </button>
-                    
-                    <button class="btn-compare" onclick="openCompareModal()">
-                        <i class="fa-solid fa-code-compare"></i> Comparar
+
                     </button>
 
+                   
+
+                    <button class="btn-compare" onclick="openCompareModal()">
+
+                        <i class="fa-solid fa-code-compare"></i> Comparar
+
+                    </button>
+
+
+
                     <div class="player-socials">
+
                         <a href="https://instagram.com/marley_mahel_" id="link-ig" target="_blank" rel="noopener" onclick="handleSocialClick(event, 'ig')">
+
                             <i class="fa-brands fa-instagram"></i>
+
                         </a>
+
                         <a href="https://tiktok.com/@dp_meli_" id="link-tk" target="_blank" rel="noopener" onclick="handleSocialClick(event, 'tk')">
+
                             <i class="fa-brands fa-tiktok"></i>
+
                         </a>
+
                     </div>
+
                 </div>
+
             </div>
+
+
 
         </div>
 
+
+
         <button class="nav-btn next-btn" aria-label="Próximo Jogador" onclick="changePlayer(1)">
+
             <i class="fa-solid fa-chevron-right"></i>
+
         </button>
+
+
 
     </main>
 
+
+
     <!-- BARRA DE MINIATURAS (THUMBNAILS) -->
+
     <div class="thumbnails-bar-container">
+
         <div class="thumbnails-scroll" id="thumbnails-scroll">
+
             <!-- Gerado via JS -->
+
         </div>
+
     </div>
+
+
 
     <!-- MODAL DE ESTATÍSTICAS INDIVIDUAL -->
-    <div class="stats-modal" id="stats-modal" onclick="handleOutsideModalClick(event, 'stats-modal')">
+
+    <div class="stats-modal" id="stats-modal" role="dialog" aria-labelledby="modal-title" onclick="handleOutsideModalClick(event, 'stats-modal')">
+
         <div class="modal-content">
+
             <button class="close-btn" onclick="toggleStatsModal(false)" aria-label="Fechar modal">
+
                 <i class="fa-solid fa-xmark"></i>
+
             </button>
-            
+
+           
+
             <h2 id="modal-title">DESEMPENHO: DP MELI</h2>
+
             <div class="line-divider" id="modal-divider"></div>
 
+
+
             <div class="stats-grid">
+
                 <div class="stat-bar-wrapper">
+
                     <div class="stat-info">
+
                         <span><i class="fa-solid fa-skull"></i> K/D RATE</span>
+
                         <span id="stat-kd-val" class="stat-value">2.45</span>
+
                     </div>
+
                     <div class="bar-bg">
+
                         <div class="bar-fill" id="bar-kd"></div>
+
                     </div>
+
                 </div>
 
+
+
                 <div class="stat-bar-wrapper">
+
                     <div class="stat-info">
+
                         <span><i class="fa-solid fa-crosshairs"></i> PRECISÃO (HEADSHOT %)</span>
+
                         <span id="stat-hs-val" class="stat-value">42%</span>
+
                     </div>
+
                     <div class="bar-bg">
+
                         <div class="bar-fill" id="bar-hs"></div>
+
                     </div>
+
                 </div>
 
+
+
                 <div class="stat-bar-wrapper">
+
                     <div class="stat-info">
+
                         <span><i class="fa-solid fa-fire"></i> DANO MÉDIO / PARTIDA</span>
+
                         <span id="stat-dmg-val" class="stat-value">1280</span>
+
                     </div>
+
                     <div class="bar-bg">
+
                         <div class="bar-fill" id="bar-dmg"></div>
+
                     </div>
+
                 </div>
 
+
+
                 <div class="stat-bar-wrapper">
+
                     <div class="stat-info">
+
                         <span><i class="fa-solid fa-id-card"></i> PARTICIPAÇÃO EM ABATES</span>
+
                         <span id="stat-kp-val" class="stat-value">72%</span>
+
                     </div>
+
                     <div class="bar-bg">
+
                         <div class="bar-fill" id="bar-kp"></div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <!-- MODAL COMPARATIVO (VERSUS MODE) -->
-    <div class="stats-modal" id="compare-modal" onclick="handleOutsideModalClick(event, 'compare-modal')">
+
+    <div class="stats-modal" id="compare-modal" role="dialog" aria-labelledby="modal-title-compare" onclick="handleOutsideModalClick(event, 'compare-modal')">
+
         <div class="modal-content compare-modal-content">
+
             <button class="close-btn" onclick="toggleCompareModal(false)" aria-label="Fechar modal">
+
                 <i class="fa-solid fa-xmark"></i>
+
             </button>
-            
+
+           
+
             <div class="vs-header">
-                <h2>MODO COMPARATIVO</h2>
+
+                <h2 id="modal-title-compare">MODO COMPARATIVO</h2>
+
                 <div class="line-divider"></div>
+
             </div>
+
+
 
             <div class="compare-selectors">
+
                 <div class="selector-box p1-box">
-                    <label>JOGADOR 1</label>
+
+                    <label for="select-p1">JOGADOR 1</label>
+
                     <select id="select-p1" onchange="renderComparison()"></select>
+
                 </div>
+
                 <div class="vs-badge">VS</div>
+
                 <div class="selector-box p2-box">
-                    <label>JOGADOR 2</label>
+
+                    <label for="select-p2">JOGADOR 2</label>
+
                     <select id="select-p2" onchange="renderComparison()"></select>
+
                 </div>
+
             </div>
+
+
 
             <div class="compare-profiles">
+
                 <div class="p-card" id="p1-card">
+
                     <img id="p1-img" src="" alt="Player 1">
+
                     <h3 id="p1-nick">NICK</h3>
+
                     <span id="p1-role">ROLE</span>
+
                 </div>
+
                 <div class="p-card" id="p2-card">
+
                     <img id="p2-img" src="" alt="Player 2">
+
                     <h3 id="p2-nick">NICK</h3>
+
                     <span id="p2-role">ROLE</span>
+
                 </div>
+
             </div>
+
+
 
             <div class="compare-stats-grid">
-                <!-- K/D -->
+
                 <div class="cmp-row">
+
                     <span id="cmp-p1-kd" class="cmp-val">0.00</span>
+
                     <div class="cmp-label"><i class="fa-solid fa-skull"></i> K/D RATE</div>
+
                     <span id="cmp-p2-kd" class="cmp-val">0.00</span>
+
                 </div>
-                <!-- HS % -->
+
                 <div class="cmp-row">
+
                     <span id="cmp-p1-hs" class="cmp-val">0%</span>
+
                     <div class="cmp-label"><i class="fa-solid fa-crosshairs"></i> HEADSHOT %</div>
+
                     <span id="cmp-p2-hs" class="cmp-val">0%</span>
+
                 </div>
-                <!-- DANO -->
+
                 <div class="cmp-row">
+
                     <span id="cmp-p1-dmg" class="cmp-val">0</span>
+
                     <div class="cmp-label"><i class="fa-solid fa-fire"></i> DANO MÉDIO</div>
+
                     <span id="cmp-p2-dmg" class="cmp-val">0</span>
+
                 </div>
-                <!-- KP % -->
+
                 <div class="cmp-row">
+
                     <span id="cmp-p1-kp" class="cmp-val">0%</span>
+
                     <div class="cmp-label"><i class="fa-solid fa-id-card"></i> PARTICIPAÇÃO</div>
+
                     <span id="cmp-p2-kp" class="cmp-val">0%</span>
+
                 </div>
+
             </div>
 
+
+
         </div>
+
     </div>
 
-    <script>
-        const roleColors = {
-            "RUSH": "#ff4500",
-            "RUSH N1": "#ff0000",
-            "RUSH N2": "#ff6600",
-            "RUSH N3": "#ffcc00",
-            "SNIPER": "#00ffff",
-            "CEO": "#ff0055",
-            "GRANADEIRO": "#00ff00",
-            "SUPORTE": "#9933ff"
-        };
 
-        const players = [
-            {
-                nick: "DP MELI",
-                name: "MARLEY STEELE",
-                role: "SNIPER / CEO",
-                country: "Moçambique",
-                flagClass: "fi fi-mz",
-                bio: "Responsável pela estratégia, chamadas de call decisivas e coordenação da equipe em direção ao topo do cenário.",
-                img: "mahel.png",
-                ig: "https://instagram.com/marley_mahel_",
-                tk: "https://tiktok.com/@dp_meli_",
-                stats: { kd: 2.45, kdPct: "85%", hs: 42, hsPct: "65%", dmg: 1420, dmgPct: "90%", kp: 72, kpPct: "68%" }
-            },
-            {
-                nick: "DP ALEX7",
-                name: "ALEXANDRE BENTO",
-                role: "RUSH N1",
-                country: "Angola",
-                flagClass: "fi fi-ao",
-                bio: "A ponta de lança da equipe. Especialista em quebrar linhas inimigas e garantir os primeiros abates nos combates mais intensos.",
-                img: "alex.png",
-                ig: "https://instagram.com/alexzz__1979",
-                tk: "https://tiktok.com/@alexzzbento77",
-                stats: { kd: 2.10, kdPct: "78%", hs: 65, hsPct: "88%", dmg: 1321, dmgPct: "95%", kp: 86, kpPct: "65%" }
-            },
-            {
-                nick: "DP NIGHTWING",
-                name: "GABRIEL OLIVEIRA",
-                role: "RUSH N1 / RUSH N2",
-                country: "Angola",
-                flagClass: "fi fi-ao",
-                bio: "Responsável pelo re-frag e continuidade da aggression. Entra em cena imediatamente após o primeiro confronto para punir o inimigo exposto.",
-                img: "bzp.png",
-                ig: "https://instagram.com/dp.gabo9",
-                tk: "https://tiktok.com/@night.rs09",
-                stats: { kd: 2.20, kdPct: "78%", hs: 57, hsPct: "88%", dmg: 1210, dmgPct: "95%", kp: 90, kpPct: "65%" }
-            },
-            {
-                nick: "DP CORONA",
-                name: "KELSON FERREIRA",
-                role: "RUSH N2 / RUSH N3",
-                country: "Angola",
-                flagClass: "fi fi-ao",
-                bio: "Jogador de suporte imediato ao primeiro homem. Avança logo atrás do Rush 1 para garantir a eliminação de troca caso o aliado caia.",
-                img: "corona.png",
-                ig: "https://instagram.com",
-                tk: "https://tiktok.com",
-                stats: { kd: 1.70, kdPct: "78%", hs: 45, hsPct: "88%", dmg: 950, dmgPct: "95%", kp: 53, kpPct: "65%" }
-            },
-            {
-                nick: "DP WARLOCK",
-                name: "CLELSON BASTOS",
-                role: "GRANADEIRO",
-                country: "Angola",
-                flagClass: "fi fi-ao",
-                bio: "Domínio total de projéteis e controle de área. Limpa posições fortificadas antes mesmo da entrada da equipe.",
-                img: "warlock.png",
-                ig: "https://instagram.com",
-                tk: "https://tiktok.com",
-                stats: { kd: 1.80, kdPct: "78%", hs: 45, hsPct: "88%", dmg: 980, dmgPct: "95%", kp: 73, kpPct: "65%" }
-            },
-            {
-                nick: "DP SAMU",
-                name: "SAMU",
-                role: "RUSH N3",
-                country: "Cabo Verde",
-                flagClass: "fi fi-cv",
-                bio: "O pilar de sustentação da entrada do round. Mantém a pressão ofensiva activa, assegurando o território conquistado.",
-                img: "samu.png",
-                ig: "https://instagram.com",
-                tk: "https://tiktok.com",
-                stats: { kd: 1.70, kdPct: "78%", hs: 49, hsPct: "88%", dmg: 890, dmgPct: "95%", kp: 71, kpPct: "65%" }
-            },
-            {
-                nick: "DP DARKZADA",
-                name: "YANICK BASTOS",
-                role: "RUSH N3",
-                country: "Moçambique",
-                flagClass: "fi fi-mz",
-                bio: "Finalizador preciso. Assegura a eliminação de inimigos danificados pelos atacantes da frente, sem dar espaço para recuperação.",
-                img: "yanick.png",
-                ig: "https://instagram.com/yanick_bastos7",
-                tk: "https://tiktok.com/@darkzada.x",
-                stats: { kd: 0.20, kdPct: "78%", hs: 0, hsPct: "88%", dmg: 0, dmgPct: "95%", kp: 0, kpPct: "65%" }
-            },
-            {
-                nick: "DP ERICK",
-                name: "ERICK",
-                role: "RUSH N1",
-                country: "Moçambique",
-                flagClass: "fi fi-mz",
-                bio: "Ponta de lança de alto risco. Entra em zonas hostis para extrair informação instantânea e abrir rotas de ataque.",
-                img: "erick.png",
-                ig: "https://instagram.com",
-                tk: "https://tiktok.com",
-                stats: { kd: 1.70, kdPct: "78%", hs: 61, hsPct: "88%", dmg: 990, dmgPct: "95%", kp: 75, kpPct: "65%" }
-            },
-            {
-                nick: "DP NEON",
-                name: "NUNO TEXEIRA",
-                role: "SUPORTE / SNIPER",
-                country: "Angola",
-                flagClass: "fi fi-ao",
-                bio: "Mira cirúrgica de longa distância. Garante o controle total do mapa enquanto os avançados cumprem seus objetivos.",
-                img: "neon.png",
-                ig: "https://instagram.com",
-                tk: "https://tiktok.com",
-                stats: { kd: 2.80, kdPct: "98%", hs: 38, hsPct: "96%", dmg: 1720, dmgPct: "70%", kp: 81, kpPct: "58%" }
-            },
-            {
-                nick: "DP SLOW",
-                name: "JOGADOR OCULTO",
-                role: "RUSH N1",
-                country: "Moçambique",
-                flagClass: "fi fi-mz",
-                bio: "Elemento surpresa da Deadpoint. Mantém o ritmo tático e leitura estratégica da partida sob total controle.",
-                img: "neon.png",
-                ig: "https://instagram.com",
-                tk: "https://tiktok.com",
-                stats: { kd: 1.50, kdPct: "82%", hs: 76, hsPct: "72%", dmg: 1650, dmgPct: "85%", kp: 78, kpPct: "70%" }
-            }
-        ];
 
-        let currentIndex = 0;
-        let isAnimating = false;
+    <script src="lineup.js"></script>
 
-        function handleSocialClick(event, platform) {
-            const player = players[currentIndex];
-            const url = player[platform];
-            const invalidUrls = ["https://instagram.com", "https://instagram.com/", "https://tiktok.com", "https://tiktok.com/", "", "#"];
-
-            if (!url || invalidUrls.includes(url.trim())) {
-                event.preventDefault();
-                alert("Rede social não informada para este jogador.");
-            }
-        }
-
-        function getRoleColors(roleString) {
-            const cleanRoles = roleString.split('/').map(r => r.trim());
-            let primaryColor = roleColors[cleanRoles[0]] || "#ffffff";
-            let secondaryColor = cleanRoles[1] ? (roleColors[cleanRoles[1]] || primaryColor) : primaryColor;
-            return { primary: primaryColor, secondary: secondaryColor };
-        }
-
-        /* --- MINIATURAS (THUMBNAILS) --- */
-        function renderThumbnails() {
-            const container = document.getElementById('thumbnails-scroll');
-            container.innerHTML = '';
-
-            players.forEach((p, idx) => {
-                const thumb = document.createElement('div');
-                thumb.className = `thumb-item ${idx === currentIndex ? 'active' : ''}`;
-                thumb.onclick = () => selectPlayerByIndex(idx);
-
-                thumb.innerHTML = `
-                    <img src="${p.img}" alt="${p.nick}" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=DP';">
-                    <span class="thumb-nick">${p.nick}</span>
-                `;
-                container.appendChild(thumb);
-            });
-        }
-
-        function updateThumbnailsActive() {
-            const thumbs = document.querySelectorAll('.thumb-item');
-            thumbs.forEach((t, i) => {
-                if (i === currentIndex) {
-                    t.classList.add('active');
-                    t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                } else {
-                    t.classList.remove('active');
-                }
-            });
-        }
-
-        function selectPlayerByIndex(index) {
-            if (index === currentIndex || isAnimating) return;
-            const direction = index > currentIndex ? 1 : -1;
-            currentIndex = index;
-            updateShowcase(direction);
-        }
-
-        function changePlayer(direction) {
-            if (isAnimating) return;
-            currentIndex += direction;
-            if (currentIndex < 0) currentIndex = players.length - 1;
-            if (currentIndex >= players.length) currentIndex = 0;
-            updateShowcase(direction);
-        }
-
-        function updateShowcase(direction = 1) {
-            isAnimating = true;
-
-            const imgContainer = document.getElementById('player-img-container');
-            const infoSide = document.querySelector('.player-info-side');
-            const watermark = document.getElementById('bg-watermark');
-
-            imgContainer.classList.add('slide-out-left');
-            infoSide.classList.add('slide-out-right');
-            if (watermark) watermark.style.opacity = "0";
-
-            updateThumbnailsActive();
-
-            setTimeout(() => {
-                const p = players[currentIndex];
-                const colors = getRoleColors(p.role);
-
-                imgContainer.style.setProperty('--role-color-primary', colors.primary);
-                imgContainer.style.setProperty('--role-color-secondary', colors.secondary);
-
-                document.getElementById('player-nick').innerText = p.nick;
-                if (watermark) watermark.innerText = p.nick;
-                document.getElementById('player-name').innerText = p.name;
-                document.getElementById('player-role').innerText = p.role;
-                document.getElementById('player-country').innerHTML = `<span class="${p.flagClass}"></span> ${p.country}`;
-                document.getElementById('player-bio').innerText = p.bio;
-                document.getElementById('player-img').src = p.img;
-                document.getElementById('link-ig').href = p.ig;
-                document.getElementById('link-tk').href = p.tk;
-
-                updateModalData();
-
-                imgContainer.classList.remove('slide-out-left');
-                infoSide.classList.remove('slide-out-right');
-                if (watermark) watermark.style.opacity = "0.03";
-
-                isAnimating = false;
-            }, 350);
-        }
-
-        /* --- MODAL ESTATÍSTICAS --- */
-        function updateModalData() {
-            const p = players[currentIndex];
-            const colors = getRoleColors(p.role);
-            const modal = document.getElementById('stats-modal');
-
-            modal.style.setProperty('--modal-primary', colors.primary);
-            modal.style.setProperty('--modal-secondary', colors.secondary);
-
-            document.getElementById('modal-title').innerText = `DESEMPENHO: ${p.nick}`;
-            document.getElementById('stat-kd-val').innerText = p.stats.kd;
-            document.getElementById('stat-hs-val').innerText = p.stats.hs + '%';
-            document.getElementById('stat-dmg-val').innerText = p.stats.dmg;
-            document.getElementById('stat-kp-val').innerText = p.stats.kp + '%';
-
-            document.getElementById('bar-kd').style.width = '0%';
-            document.getElementById('bar-hs').style.width = '0%';
-            document.getElementById('bar-dmg').style.width = '0%';
-            document.getElementById('bar-kp').style.width = '0%';
-        }
-
-        function toggleStatsModal(show) {
-            const modal = document.getElementById('stats-modal');
-            const p = players[currentIndex];
-
-            if (show) {
-                updateModalData();
-                modal.classList.add('active');
-                
-                setTimeout(() => {
-                    document.getElementById('bar-kd').style.width = p.stats.kdPct;
-                    document.getElementById('bar-hs').style.width = p.stats.hsPct;
-                    document.getElementById('bar-dmg').style.width = p.stats.dmgPct;
-                    document.getElementById('bar-kp').style.width = p.stats.kpPct;
-                }, 150);
-            } else {
-                modal.classList.remove('active');
-            }
-        }
-
-        /* --- MODO COMPARATIVO (VERSUS) --- */
-        function populateCompareSelects() {
-            const s1 = document.getElementById('select-p1');
-            const s2 = document.getElementById('select-p2');
-            s1.innerHTML = '';
-            s2.innerHTML = '';
-
-            players.forEach((p, idx) => {
-                s1.innerHTML += `<option value="${idx}">${p.nick}</option>`;
-                s2.innerHTML += `<option value="${idx}">${p.nick}</option>`;
-            });
-
-            s1.value = currentIndex;
-            s2.value = (currentIndex + 1) % players.length;
-        }
-
-        function openCompareModal() {
-            populateCompareSelects();
-            renderComparison();
-            toggleCompareModal(true);
-        }
-
-        function toggleCompareModal(show) {
-            const modal = document.getElementById('compare-modal');
-            if (show) modal.classList.add('active');
-            else modal.classList.remove('active');
-        }
-
-        function renderComparison() {
-            const idx1 = parseInt(document.getElementById('select-p1').value);
-            const idx2 = parseInt(document.getElementById('select-p2').value);
-
-            const p1 = players[idx1];
-            const p2 = players[idx2];
-
-            document.getElementById('p1-img').src = p1.img;
-            document.getElementById('p1-nick').innerText = p1.nick;
-            document.getElementById('p1-role').innerText = p1.role;
-
-            document.getElementById('p2-img').src = p2.img;
-            document.getElementById('p2-nick').innerText = p2.nick;
-            document.getElementById('p2-role').innerText = p2.role;
-
-            // Atribuir valores e destacar o vencedor em cada stat
-            setStatComparison('cmp-p1-kd', 'cmp-p2-kd', p1.stats.kd, p2.stats.kd, '');
-            setStatComparison('cmp-p1-hs', 'cmp-p2-hs', p1.stats.hs, p2.stats.hs, '%');
-            setStatComparison('cmp-p1-dmg', 'cmp-p2-dmg', p1.stats.dmg, p2.stats.dmg, '');
-            setStatComparison('cmp-p1-kp', 'cmp-p2-kp', p1.stats.kp, p2.stats.kp, '%');
-        }
-
-        function setStatComparison(id1, id2, val1, val2, suffix) {
-            const el1 = document.getElementById(id1);
-            const el2 = document.getElementById(id2);
-
-            el1.innerText = val1 + suffix;
-            el2.innerText = val2 + suffix;
-
-            el1.classList.remove('winner', 'loser');
-            el2.classList.remove('winner', 'loser');
-
-            if (val1 > val2) {
-                el1.classList.add('winner');
-                el2.classList.add('loser');
-            } else if (val2 > val1) {
-                el2.classList.add('winner');
-                el1.classList.add('loser');
-            }
-        }
-
-        function handleOutsideModalClick(event, modalId) {
-            if (event.target.id === modalId) {
-                if (modalId === 'stats-modal') toggleStatsModal(false);
-                if (modalId === 'compare-modal') toggleCompareModal(false);
-            }
-        }
-
-        // Teclado
-        document.addEventListener('keydown', (e) => {
-            const statsModalActive = document.getElementById('stats-modal').classList.contains('active');
-            const compareModalActive = document.getElementById('compare-modal').classList.contains('active');
-
-            if (e.key === 'Escape') {
-                if (statsModalActive) toggleStatsModal(false);
-                if (compareModalActive) toggleCompareModal(false);
-            } else if (!statsModalActive && !compareModalActive) {
-                if (e.key === 'ArrowRight') changePlayer(1);
-                if (e.key === 'ArrowLeft') changePlayer(-1);
-            }
-        });
-
-        // Swipe Mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
-        const sliderZone = document.getElementById('slider-zone');
-
-        sliderZone.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        sliderZone.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, { passive: true });
-
-        function handleSwipe() {
-            if (document.getElementById('stats-modal').classList.contains('active') || 
-                document.getElementById('compare-modal').classList.contains('active')) return;
-
-            const threshold = 50;
-            if (touchEndX < touchStartX - threshold) changePlayer(1);
-            if (touchEndX > touchStartX + threshold) changePlayer(-1);
-        }
-
-        // Inicialização
-        renderThumbnails();
-        updateModalData();
-    </script>
 </body>
+
 </html>

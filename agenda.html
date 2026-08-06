@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEADPOINT | Cronograma de Operações</title>
-    <!-- Fonte do Line-up: Rajdhani -->
+    <!-- Fonte Rajdhani -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -47,7 +47,7 @@
             <p class="crypto-sub">Diretrizes ativas, agendamentos táticos e arquivos de missões da DEADPOINT.</p>
         </div>
 
-        <!-- BARRA DE FILTROS DA AGENDA (SEM BUSCA) -->
+        <!-- BARRA DE FILTROS DA AGENDA -->
         <div class="hud-controls-bar">
             <div class="hud-filters">
                 <button class="filter-btn active" data-filter="ALL" onclick="setFiltroTipo('ALL', event)">[ ALL_OPS ]</button>
@@ -76,198 +76,9 @@
 
     </main>
 
-    <!-- LÓGICA DA AGENDA -->
-    <script>
-        const eventosDaOrganização = [
-            {
-                id: "evt_02",
-                tipo: "CAMPEONATO",
-                titulo: "FREE FIRE WORLD SERIES - FFWS",
-                descricao: "Qualificatórias oficiais para EWC. Monitoramento máximo de desempenho da equipe principal.",
-                dataIso: "2026-07-20",
-                dataFimIso: "2026-08-30",
-                hora: "18:45",
-                tz: "CAT",
-                premiacao: "$10,000",
-                pais: "ÁFRICA - MENA",
-                tiktokUrl: "https://www.tiktok.com/@garenafreefire.ssa"
-            },
-            {
-                id: "evt_03",
-                tipo: "CAMPEONATO",
-                titulo: "NGLA SERIES",
-                descricao: "Transmissão ao vivo mostrando o POV oficial e comunicação de voz da Line-up principal.",
-                dataIso: "2026-09-01", 
-                dataFimIso: "2026-09-30",
-                hora: "21:00",
-                tz: "CAT",
-                premiacao: "$400",
-                pais: "10 REGIONS - AFRICA",
-                tiktokUrl: "https://www.tiktok.com/@meridian_esports"
-            }
-        ];
-
-        let filtroAtual = 'ALL';
-
-        function atualizarRelogio() {
-            const agora = new Date();
-            const clockEl = document.getElementById('live-clock');
-            if (clockEl) {
-                clockEl.textContent = `${agora.toLocaleTimeString('pt-BR')} CAT`;
-            }
-        }
-        setInterval(atualizarRelogio, 1000);
-        atualizarRelogio();
-
-        function gerarLinkGoogleCalendar(evento) {
-            const [ano, mes, dia] = evento.dataIso.split('-');
-            const [hora, min] = evento.hora.split(':');
-            
-            const start = new Date(Date.UTC(ano, mes - 1, dia, hora, min));
-            const end = new Date(start.getTime() + (2 * 60 * 60 * 1000));
-
-            const fmt = d => d.toISOString().replace(/-|:|\.\d\d\d/g, '');
-            const title = encodeURIComponent(`DEADPOINT | ${evento.titulo}`);
-            const details = encodeURIComponent(evento.descricao);
-
-            return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(start)}/${fmt(end)}&details=${details}`;
-        }
-
-        function calcularStatusEAlocacao(evento) {
-            const hoje = new Date();
-            const [anoI, mesI, diaI] = evento.dataIso.split('-').map(Number);
-            const [anoF, mesF, diaF] = evento.dataFimIso.split('-').map(Number);
-            const [hora, min] = evento.hora.split(':').map(Number);
-
-            const dataInicio = new Date(anoI, mesI - 1, diaI, hora, min);
-            const dataFim = new Date(anoF, mesF - 1, diaF, 23, 59, 59);
-
-            if (hoje > dataFim) {
-                return { status: "CONCLUÍDO", classe: "status-ended", dot: "status-dead", alvo: "LIXEIRA", countdown: "FINALIZADA" };
-            } 
-            
-            if (hoje >= dataInicio && hoje <= dataFim) {
-                return { status: "EM ANDAMENTO", classe: "status-live-now", dot: "status-live", alvo: "PRINCIPAL", countdown: "AO VIVO AGORA" };
-            } 
-
-            const diffMs = dataInicio - hoje;
-            const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            const diffHoras = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-            const countdownText = `INICIA EM: ${diffDias}D ${diffHoras}H`;
-
-            return { status: "AGUARDANDO", classe: "status-waiting", dot: "status-ok", alvo: "PRINCIPAL", countdown: countdownText };
-        }
-
-        const ICONES_TIPO = {
-            CAMPEONATO: { icon: "fa-solid fa-trophy", tag: "tag-championship" },
-            TREINO: { icon: "fa-solid fa-crosshairs", tag: "tag-scrim" },
-            LIVE: { icon: "fa-solid fa-tv", tag: "tag-live" }
-        };
-
-        function renderizarAgenda() {
-            const containerPrincipal = document.getElementById('agenda-entries');
-            const containerLixeira = document.getElementById('agenda-trash');
-
-            let htmlPrincipal = '';
-            let htmlLixeira = '';
-
-            const eventosFiltrados = eventosDaOrganização.filter(e => {
-                return (filtroAtual === 'ALL' || e.tipo === filtroAtual);
-            });
-
-            eventosFiltrados.forEach(evento => {
-                const configTipo = ICONES_TIPO[evento.tipo] || { icon: "fa-solid fa-crosshairs", tag: "tag-default" };
-                const infoStatus = calcularStatusEAlocacao(evento);
-                const googleUrl = gerarLinkGoogleCalendar(evento);
-
-                const dataIniFmt = new Date(evento.dataIso + 'T00:00:00').toLocaleDateString('pt-BR');
-                const dataFimFmt = new Date(evento.dataFimIso + 'T00:00:00').toLocaleDateString('pt-BR');
-                const periodo = evento.dataIso === evento.dataFimIso ? dataIniFmt : `${dataIniFmt} — ${dataFimFmt}`;
-
-                const cardHTML = `
-                    <div class="agenda-row ${infoStatus.alvo === 'LIXEIRA' ? 'archived-card' : ''}" data-id="${evento.id}">
-                        <div class="row-left">
-                            <div class="icon-box-hud">
-                                <i class="${configTipo.icon}"></i>
-                            </div>
-                            <div class="event-details">
-                                <div class="tag-row-wrapper">
-                                    <span class="event-type-tag ${configTipo.tag}">${evento.tipo}</span>
-                                    <span class="event-geo-tag"><i class="fa-solid fa-earth-africa"></i> ${evento.pais}</span>
-                                    <span class="countdown-badge"><i class="fa-solid fa-stopwatch"></i> ${infoStatus.countdown}</span>
-                                </div>
-                                <h2>${evento.titulo}</h2>
-                                <p>${evento.descricao}</p>
-                                <div class="hud-extra-info">
-                                    <span><i class="fa-solid fa-award"></i> PREMIAÇÃO: <strong>${evento.premiacao}</strong></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row-right">
-                            <div class="time-block">
-                                <div class="time-item"><i class="fa-regular fa-calendar-days"></i> ${periodo}</div>
-                                <div class="time-item"><i class="fa-regular fa-clock"></i> ${evento.hora} ${evento.tz}</div>
-                            </div>
-                            <div class="action-block-hud">
-                                <a href="${evento.tiktokUrl || '#'}" target="_blank" class="btn-action btn-tiktok" title="TikTok Oficial do Organizador" aria-label="TikTok Oficial">
-                                    <i class="fa-brands fa-tiktok"></i>
-                                </a>
-
-                                ${infoStatus.alvo === 'PRINCIPAL' ? `
-                                    <a href="${googleUrl}" target="_blank" class="btn-action btn-calendar" title="Sincronizar no Google Agenda" aria-label="Sincronizar no Google Agenda">
-                                        <i class="fa-solid fa-calendar-plus"></i>
-                                    </a>
-                                    <button class="btn-action btn-notify" onclick="solicitarNotificacao('${evento.titulo}')" title="Ativar Alerta do Navegador" aria-label="Ativar Notificações">
-                                        <i class="fa-regular fa-bell"></i>
-                                    </button>
-                                ` : `
-                                    <span class="btn-action disabled-btn" title="Operação Concluída">
-                                        <i class="fa-solid fa-box-archive"></i>
-                                    </span>
-                                `}
-
-                                <div class="status-block ${infoStatus.classe}">
-                                    <span class="indicator-dot ${infoStatus.dot}"></span>
-                                    <span class="status-text">${infoStatus.status}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                if (infoStatus.alvo === "PRINCIPAL") {
-                    htmlPrincipal += cardHTML;
-                } else {
-                    htmlLixeira += cardHTML;
-                }
-            });
-
-            containerPrincipal.innerHTML = htmlPrincipal || `<div class="no-events-alert">// NENHUMA OPERAÇÃO ENCONTRADA NESTA CATEGORIA</div>`;
-            containerLixeira.innerHTML = htmlLixeira || `<div class="no-events-alert" style="opacity: 0.5;">// HISTÓRICO LIMPO. NENHUMA OPERAÇÃO ARQUIVADA.</div>`;
-        }
-
-        function setFiltroTipo(tipo, event) {
-            document.querySelectorAll('.hud-filters .filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            filtroAtual = tipo;
-            renderizarAgenda();
-        }
-
-        function solicitarNotificacao(titulo) {
-            if (!("Notification" in window)) {
-                alert("Navegador não suporta alertas táticos.");
-                return;
-            }
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    new Notification("DEADPOINT | Lembrete de Operação", {
-                        body: `Alerta ativo para: ${titulo}`
-                    });
-                }
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", renderizarAgenda);
-    </script>
+    <!-- SDK Oficial do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- JS Externo -->
+    <script src="agenda.js"></script>
 </body>
 </html>
