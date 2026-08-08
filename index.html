@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEADPOINT | E-Sports Team</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="modal-buttons.css">
     <!-- Ícones Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -15,7 +16,6 @@
         <div class="navbar">
             <div class="logo">DEAD<span>POINT</span></div>
             
-            <!-- Menu Hambúrguer para Celular -->
             <div class="menu-toggle" id="mobile-menu">
                 <i class="fa-solid fa-bars"></i>
             </div>
@@ -33,27 +33,21 @@
 
     <!-- HERO SECTION -->
     <section class="hero">
-        <!-- Camada de Vídeo/Imagem de Fundo -->
         <div class="hero-bg">
             <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070" alt="Deadpoint Combat">
         </div>
-        
-        <!-- Camada de Sobreposição (Overlay) -->
         <div class="hero-overlay"></div>
 
-        <!-- Conteúdo Principal -->
         <div class="hero-content">
             <h1 class="animate-pop">DEAD<span>POINT</span></h1>
             <p class="animate-fade">A mira é certa, o ponto é morto. Dominando o cenário competitivo com precisão absoluta.</p>
             
-            <!-- Botões de Ação -->
             <div class="hero-btns animate-fade">
                 <a href="lineup.html" class="btn-hero primary">Conheça a Line</a>
                 <a href="agenda.html" class="btn-hero secondary">Próximos Jogos</a>
                 <a href="recrutamento.html" class="btn-hero recruitment">Recrutamento</a>
             </div>
 
-            <!-- Links de Redes Sociais -->
             <div class="hero-socials animate-fade">
                 <a href="https://www.instagram.com/_dead_point_" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
                 <a href="https://www.tiktok.com/@deadpointdp" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
@@ -61,7 +55,6 @@
             </div>
         </div>
 
-        <!-- WIDGET DO DISCORD (Compacto - Apenas Cabeçalho Online) -->
         <div class="discord-widget-card animate-fade">
             <iframe src="https://discord.com/widget?id=1454568938385051805&theme=dark" 
                     width="260" 
@@ -73,17 +66,162 @@
         </div>
     </section>
 
-    <!-- SCRIPT PARA O MENU MOBILE -->
+    <!-- BOTÃO MANUAL -->
+    <div style="text-align: center; padding: 20px; background: #111;">
+        <button onclick="abrirModalNotificacoes()" style="background: #e50914; color: white; border: none; padding: 12px 24px; font-weight: bold; cursor: pointer; border-radius: 5px; font-size: 1rem;">
+            Receber Notificacoes da DEADPOINT
+        </button>
+    </div>
+
+    <!-- HTML DO POP-UP CUSTOMIZADO -->
+    <div id="push-modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Ativar Notificações</h3>
+            <p style="margin-top: 10px; font-size: 0.95rem; color: #ccc;">Queres receber alertas em tempo real sobre os próximos jogos e novidades da DEADPOINT?</p>
+            
+            <div style="text-align: left; margin: 15px 0; color: #fff; font-size: 0.9rem;">
+                <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                    <input type="checkbox" id="pref-jogos" checked> Próximos Jogos e Agenda
+                </label>
+                <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                    <input type="checkbox" id="pref-titulos" checked> Conquistas e Títulos
+                </label>
+                <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                    <input type="checkbox" id="pref-lineup" checked> Mudanças na Line-up
+                </label>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-accept" onclick="aceitarNotificacoes()">Sim</button>
+                <button class="btn-deny" onclick="fecharModalNotificacoes()">Nao</button>
+            </div>
+            <div id="push-message" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DO MENU MOBILE E MODAL -->
     <script>
         const mobileMenu = document.getElementById('mobile-menu');
         const navList = document.querySelector('.nav-list');
-
         mobileMenu.addEventListener('click', () => {
             navList.classList.toggle('active');
             const icon = mobileMenu.querySelector('i');
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-xmark');
         });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('deadpoint_notif_decided')) {
+                setTimeout(() => {
+                    abrirModalNotificacoes();
+                }, 1500);
+            }
+        });
+
+        function abrirModalNotificacoes() {
+            document.getElementById('push-modal').style.display = 'flex';
+            document.getElementById('push-message').innerText = '';
+        }
+
+        function fecharModalNotificacoes() {
+            document.getElementById('push-modal').style.display = 'none';
+        }
+    </script>
+
+    <!-- SCRIPT DE SUPABASE E PUSH NOTIFICATIONS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://vqlntcqsgsgbgwejwsen.supabase.co';
+        const supabaseKey = 'sb_publishable_OKefDfosaW_yyjyLtLgMiA_3FyWl182';
+        
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        const publicVapidKey = 'BEvBQvXn_4rdJ6bGJzBGeNz7q2KFR26aB357DvBRTR85mSqTH78waH7eyW--1pa-cuZDAGQbAlX17aur_7wv5jc';
+
+        async function aceitarNotificacoes() {
+            const msgEl = document.getElementById('push-message');
+            msgEl.style.color = '#ffcc00';
+            msgEl.innerText = 'A verificar suporte...';
+
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                msgEl.style.color = '#ff4d4d';
+                msgEl.innerText = 'Erro: O seu navegador não suporta notificações.';
+                return;
+            }
+
+            try {
+                const preferences = {
+                    jogos: document.getElementById('pref-jogos').checked,
+                    titulos: document.getElementById('pref-titulos').checked,
+                    lineup: document.getElementById('pref-lineup').checked
+                };
+
+                msgEl.innerText = 'A registar Service Worker...';
+                const registration = await navigator.serviceWorker.register('/sw.js');
+                await navigator.serviceWorker.ready;
+                
+                msgEl.innerText = 'A pedir permissão...';
+                const permission = await Notification.requestPermission();
+                
+                if (permission !== 'granted') {
+                    msgEl.style.color = '#ff4d4d';
+                    msgEl.innerText = 'Permissão negada pelo utilizador.';
+                    setTimeout(() => { fecharModalNotificacoes(); }, 1500);
+                    return;
+                }
+
+                msgEl.innerText = 'A limpar subscrição antiga...';
+                const existingSubscription = await registration.pushManager.getSubscription();
+                if (existingSubscription) {
+                    await existingSubscription.unsubscribe();
+                }
+
+                msgEl.innerText = 'A subscrever os alertas...';
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+                });
+
+                msgEl.innerText = 'A guardar na base de dados...';
+                const subJson = subscription.toJSON();
+
+                const { error } = await supabaseClient
+                    .from('push_subscriptions')
+                    .insert([{ 
+                        subscription: subJson,
+                        preferences: preferences
+                    }]);
+
+                if (error) {
+                    console.error('Erro Supabase detalhado:', error);
+                    msgEl.style.color = '#ff4d4d';
+                    msgEl.innerText = 'Erro DB: ' + (error.message || 'Falha ao salvar');
+                } else {
+                    msgEl.style.color = '#2ecc71';
+                    msgEl.innerText = 'Notificações ativadas com sucesso!';
+                    localStorage.setItem('deadpoint_notif_decided', 'true');
+                    setTimeout(() => {
+                        fecharModalNotificacoes();
+                    }, 2000);
+                }
+
+            } catch (err) {
+                console.error('Erro crítico:', err);
+                msgEl.style.color = '#ff4d4d';
+                msgEl.innerText = 'Erro: ' + (err.message || 'Falha ao configurar.');
+            }
+        }
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
     </script>
 </body>
 </html>

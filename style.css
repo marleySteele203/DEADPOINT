@@ -1,314 +1,742 @@
 /* ==========================================================================
+
    DEADPOINT | E-SPORTS TEAM - GLOBAL & HERO STYLE (COMPLETO)
+
    ========================================================================== */
+
+
 
 /* 1. RESET BASE */
+
 * {
+
     margin: 0;
+
     padding: 0;
+
     box-sizing: border-box;
+
     font-family: 'Rajdhani', 'Segoe UI', sans-serif !important;
+
 }
+
+
 
 body {
+
     background-color: #05070a;
+
     color: #ffffff;
+
     min-height: 100vh;
+
     display: flex;
+
     flex-direction: column;
+
     overflow-x: hidden;
+
     position: relative;
+
 }
+
+
 
 /* Força compatibilidade dos Ícones Font Awesome */
+
 i, .fa-solid, .fa-regular, .fa-brands {
+
     font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+
     font-style: normal;
+
 }
 
+
+
 /* ==========================================================================
+
    2. NAVBAR & HEADER
+
    ========================================================================== */
+
 header {
+
     width: 100%;
+
     padding: 20px 5%;
+
     position: absolute;
+
     top: 0;
+
     left: 0;
+
     z-index: 10;
+
 }
+
+
 
 .navbar {
+
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
+
     max-width: 1200px;
+
     margin: 0 auto;
+
 }
+
+
 
 .logo {
+
     font-size: 28px;
+
     font-weight: 900;
+
     letter-spacing: 2px;
+
 }
+
+
 
 .logo span {
+
     color: #ff0055;
+
 }
+
+
 
 /* Menu de Navegação */
+
 nav ul, .nav-list {
+
     display: flex;
+
     list-style: none;
+
     gap: 30px;
+
 }
+
+
 
 nav a {
+
     color: #a0aec0;
+
     text-decoration: none;
+
     font-weight: 700;
+
     font-size: 16px;
+
     text-transform: uppercase;
+
     letter-spacing: 1px;
+
     transition: color 0.3s;
+
 }
+
+
 
 nav a:hover,
+
 nav a.active {
+
     color: #00ffff;
+
 }
+
+
 
 /* Botão Hambúrguer (Escondido no Desktop) */
+
 .menu-toggle {
+
     display: none;
+
     font-size: 24px;
+
     color: #ffffff;
+
     cursor: pointer;
+
 }
 
+
+
 /* ==========================================================================
+
    3. HERO SECTION
+
    ========================================================================== */
+
 .hero {
+
     position: relative;
+
     width: 100%;
+
     min-height: 100vh;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     padding: 100px 5% 40px;
+
     z-index: 1;
+
 }
+
+
 
 .hero-bg {
+
     position: absolute;
+
     inset: 0;
+
     z-index: 0;
+
 }
+
+
 
 .hero-bg img {
+
     width: 100%;
+
     height: 100%;
+
     object-fit: cover;
+
     object-position: center;
+
     filter: brightness(0.4) contrast(1.1);
+
 }
+
+
 
 .hero-overlay {
+
     position: absolute;
+
     inset: 0;
+
     background: radial-gradient(circle at center, rgba(5, 7, 10, 0.3) 0%, #05070a 90%);
+
     z-index: 1;
+
 }
+
+
 
 .hero-content {
+
     position: relative;
+
     z-index: 5;
+
     max-width: 850px;
+
     text-align: center;
+
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
+
 }
+
+
 
 .hero-content h1 {
+
     font-size: 72px;
+
     font-weight: 900;
+
     letter-spacing: 3px;
+
     color: #ffffff;
+
     line-height: 1;
+
     margin-bottom: 15px;
+
     text-transform: uppercase;
+
 }
+
+
 
 .hero-content h1 span {
+
     color: #ff0055;
+
 }
+
+
 
 .hero-content p {
+
     font-size: 18px;
+
     color: #cbd5e0;
+
     max-width: 650px;
+
     line-height: 1.6;
+
     font-weight: 600;
+
     margin-bottom: 35px;
+
 }
 
+
+
 /* ==========================================================================
+
    4. BOTÕES DA HERO
+
    ========================================================================== */
+
 .hero-btns {
+
     display: flex;
+
     gap: 15px;
+
     flex-wrap: wrap;
+
     justify-content: center;
+
     margin-bottom: 35px;
+
 }
+
+
 
 .btn-hero {
+
     padding: 14px 28px;
+
     border-radius: 8px;
+
     font-size: 15px;
+
     font-weight: 800;
+
     text-transform: uppercase;
+
     letter-spacing: 1px;
+
     text-decoration: none;
+
     transition: all 0.3s ease;
+
     cursor: pointer;
+
 }
+
+
 
 .btn-hero.primary {
+
     background: #ff0055;
+
     color: #ffffff;
+
     box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
+
 }
+
+
 
 .btn-hero.primary:hover {
+
     background: #e0004c;
+
     box-shadow: 0 6px 20px rgba(255, 0, 85, 0.7);
+
     transform: translateY(-2px);
+
 }
+
+
 
 .btn-hero.secondary {
+
     background: rgba(0, 255, 255, 0.1);
+
     border: 1px solid #00ffff;
+
     color: #00ffff;
+
 }
+
+
 
 .btn-hero.secondary:hover {
+
     background: #00ffff;
+
     color: #05070a;
+
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+
     transform: translateY(-2px);
+
 }
+
+
 
 .btn-hero.recruitment {
+
     background: rgba(255, 255, 255, 0.05);
+
     border: 1px solid rgba(255, 255, 255, 0.2);
+
     color: #ffffff;
+
 }
+
+
 
 .btn-hero.recruitment:hover {
+
     background: rgba(255, 255, 255, 0.15);
+
     border-color: #ffffff;
+
     transform: translateY(-2px);
+
 }
 
+
+
 /* ==========================================================================
+
    5. REDES SOCIAIS
+
    ========================================================================== */
+
 .hero-socials {
+
     display: flex;
+
     gap: 20px;
+
 }
+
+
 
 .hero-socials a {
+
     width: 45px;
+
     height: 45px;
+
     border-radius: 50%;
+
     background: rgba(255, 255, 255, 0.05);
+
     border: 1px solid rgba(255, 255, 255, 0.15);
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     color: #ffffff;
+
     text-decoration: none;
+
     font-size: 20px;
+
     transition: all 0.3s ease;
+
 }
+
+
 
 .hero-socials a:hover {
+
     background: #00ffff;
+
     color: #05070a;
+
     border-color: #00ffff;
+
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+
     transform: translateY(-3px);
+
 }
 
+
+
 /* ==========================================================================
+
    6. WIDGET DO DISCORD (COMPACTO - APENAS CABEÇALHO ROXO)
+
    ========================================================================== */
+
 .discord-widget-card {
+
     position: absolute;
+
     bottom: 30px;
+
     right: 5%;
+
     background: rgba(11, 14, 20, 0.95);
+
     backdrop-filter: blur(12px);
+
     border: 1px solid rgba(88, 101, 242, 0.4);
+
     border-radius: 12px;
+
     overflow: hidden;
+
     z-index: 10;
+
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+
     width: 260px;
+
     height: 85px;
+
 }
+
+
 
 .discord-widget-card iframe {
+
     display: block;
+
     border: none;
+
     background: transparent;
+
     width: 100%;
+
     height: 150px;
+
     margin-top: 0px;
+
     pointer-events: auto;
+
 }
+
+
 
 /* ==========================================================================
+
    7. RESPONSIVIDADE
+
    ========================================================================== */
+
 @media (max-width: 768px) {
+
     .menu-toggle {
+
         display: block;
+
     }
+
+
 
     .nav-list {
+
         position: absolute;
+
         top: 100%;
+
         left: 0;
+
         width: 100%;
+
         background: rgba(5, 7, 10, 0.95);
+
         backdrop-filter: blur(10px);
+
         flex-direction: column;
+
         align-items: center;
+
         padding: 20px 0;
+
         gap: 20px;
+
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        display: none; 
+
+        display: none;
+
     }
+
+
 
     .nav-list.active {
-        display: flex; 
+
+        display: flex;
+
     }
+
+
 
     .discord-widget-card {
-        display: none; 
+
+        display: none;
+
     }
+
+
 
     .hero-content h1 {
+
         font-size: 48px;
+
     }
 
+
+
     .hero-content p {
+
         font-size: 15px;
+
     }
+
 }
+
+/* Estilos do Pop-up de Notificações */
+
+#push-modal {
+
+    display: none;
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.8);
+
+    z-index: 9999;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+
+
+.modal-content {
+
+    background: #181818;
+
+    border: 2px solid #e50914;
+
+    padding: 30px;
+
+    border-radius: 8px;
+
+    text-align: center;
+
+    max-width: 400px;
+
+    width: 90%;
+
+    color: white;
+
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+
+}
+
+
+
+.modal-buttons {
+
+    margin-top: 20px;
+
+    display: flex;
+
+    justify-content: space-around;
+
+}
+
+
+
+.btn-accept {
+
+    background: #e50914;
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+
+}
+
+
+
+.btn-deny {
+
+    background: #444;
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+
+}
+
+
+
+#push-message {
+
+    margin-top: 15px;
+
+    font-size: 0.9rem;
+
+    font-weight: bold;
+
+} 
+
