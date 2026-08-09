@@ -1,21 +1,20 @@
 {
+  "name": "DEADPOINT E-SPORTS",
   "short_name": "DEADPOINT",
-  "name": "DEADPOINT E-Sports",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#ff4500",
   "icons": [
     {
-      "src": "favicon.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-      "src": "favicon.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
-  ],
-  "start_url": "/",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
