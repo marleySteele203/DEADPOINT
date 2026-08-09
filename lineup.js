@@ -2,7 +2,13 @@
 const SUPABASE_URL = 'https://vqlntcqsgsgbgwejwsen.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_OKefDfosaW_yyjyLtLgMiA_3FyWl182';
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Inicialização segura do cliente
+let supabaseClient = null;
+if (typeof supabase !== 'undefined' && supabase.createClient) {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+    console.error("SDK do Supabase não carregado corretamente no HTML.");
+}
 
 const roleColors = {
     "RUSH": "#ff4500",
@@ -19,8 +25,36 @@ let players = [];
 let currentIndex = 0;
 let isAnimating = false;
 
+// PARSER SEGURO PARA ESTATÍSTICAS
+function parsePlayerStats(rawStats) {
+    let s = rawStats;
+    if (typeof s === 'string') {
+        try { s = JSON.parse(s); } catch (e) { s = {}; }
+    }
+    s = s || {};
+
+    const kd = parseFloat(s.kd) || 0;
+    const hs = parseFloat(s.hs) || 0;
+    const dmg = parseFloat(s.dmg) || 0;
+    const kp = parseFloat(s.kp) || 0;
+
+    // Cálculo automático das porcentagens das barras se não vierem do banco
+    const kdPct = s.kdPct || `${Math.min((kd / 4.0) * 100, 100)}%`;
+    const hsPct = s.hsPct || `${Math.min(hs, 100)}%`;
+    const dmgPct = s.dmgPct || `${Math.min((dmg / 2000) * 100, 100)}%`;
+    const kpPct = s.kpPct || `${Math.min(kp, 100)}%`;
+
+    return { kd, hs, dmg, kp, kdPct, hsPct, dmgPct, kpPct };
+}
+
 // CARREGAR JOGADORES DO SUPABASE
 async function fetchPlayersFromSupabase() {
+    if (!supabaseClient) {
+        console.warn("Cliente Supabase não disponível. Usando array vazio.");
+        updateShowcase();
+        return;
+    }
+
     try {
         const { data, error } = await supabaseClient
             .from('players')
@@ -30,7 +64,10 @@ async function fetchPlayersFromSupabase() {
         if (error) throw error;
 
         if (data && data.length > 0) {
-            players = data;
+            players = data.map(p => ({
+                ...p,
+                stats: parsePlayerStats(p.stats)
+            }));
         } else {
             console.warn("Nenhum jogador encontrado no Supabase.");
             players = [];
@@ -58,7 +95,7 @@ function handleSocialClick(event, platform) {
 
 function getRoleColors(roleString) {
     if (!roleString) return { primary: "#ffffff", secondary: "#ffffff" };
-    const cleanRoles = roleString.split('/').map(r => r.trim());
+    const cleanRoles = roleString.split('/').map(r => r.trim().toUpperCase());
     let primaryColor = roleColors[cleanRoles[0]] || "#ffffff";
     let secondaryColor = cleanRoles[1] ? (roleColors[cleanRoles[1]] || primaryColor) : primaryColor;
     return { primary: primaryColor, secondary: secondaryColor };
@@ -125,14 +162,14 @@ function updateShowcase(direction = 1) {
 
     if (players.length === 0) {
         if (watermark) watermark.innerText = 'DEADPOINT';
-        document.getElementById('player-nick').innerText = 'SEM JOGADORES';
-        document.getElementById('player-name').innerText = 'Cadastre a lineup no painel admin';
-        document.getElementById('player-role').innerText = 'ROSTER VAZIO';
-        document.getElementById('player-country').innerHTML = `—`;
-        document.getElementById('player-bio').innerText = 'Nenhum jogador cadastrado no Supabase no momento.';
-        document.getElementById('player-img').src = 'https://via.placeholder.com/400x500/0b0e14/ffffff?text=DEADPOINT';
-        document.getElementById('link-ig').href = '#';
-        document.getElementById('link-tk').href = '#';
+        if (document.getElementById('player-nick')) document.getElementById('player-nick').innerText = 'SEM JOGADORES';
+        if (document.getElementById('player-name')) document.getElementById('player-name').innerText = 'Cadastre a lineup no painel admin';
+        if (document.getElementById('player-role')) document.getElementById('player-role').innerText = 'ROSTER VAZIO';
+        if (document.getElementById('player-country')) document.getElementById('player-country').innerHTML = `—`;
+        if (document.getElementById('player-bio')) document.getElementById('player-bio').innerText = 'Nenhum jogador cadastrado no Supabase no momento.';
+        if (document.getElementById('player-img')) document.getElementById('player-img').src = 'https://via.placeholder.com/400x500/0b0e14/ffffff?text=DEADPOINT';
+        if (document.getElementById('link-ig')) document.getElementById('link-ig').href = '#';
+        if (document.getElementById('link-tk')) document.getElementById('link-tk').href = '#';
         renderThumbnails();
         return;
     }
@@ -158,21 +195,22 @@ function updateShowcase(direction = 1) {
         const name = p.name || '—';
         const role = p.role || '—';
         const country = p.country || '—';
-        const flagClass = p.flag_class || p.flagclass || p.flagClass || ''; // Suporte retrocompatível
+        const flagClass = p.flag_class || p.flagclass || p.flagClass || '';
         const bio = p.bio || 'Sem biografia informada.';
         const img = p.img || 'https://via.placeholder.com/400x500/0b0e14/ffffff?text=DEADPOINT';
 
-        document.getElementById('player-nick').innerText = nick;
+        if (document.getElementById('player-nick')) document.getElementById('player-nick').innerText = nick;
         if (watermark) watermark.innerText = nick;
-        document.getElementById('player-name').innerText = name;
-        document.getElementById('player-role').innerText = role;
+        if (document.getElementById('player-name')) document.getElementById('player-name').innerText = name;
+        if (document.getElementById('player-role')) document.getElementById('player-role').innerText = role;
+        if (document.getElementById('player-country')) {
+            document.getElementById('player-country').innerHTML = flagClass ? `<span class="${flagClass}"></span> ${country}` : country;
+        }
         
-        document.getElementById('player-country').innerHTML = flagClass ? `<span class="${flagClass}"></span> ${country}` : country;
-        
-        document.getElementById('player-bio').innerText = bio;
-        document.getElementById('player-img').src = img;
-        document.getElementById('link-ig').href = p.ig || '#';
-        document.getElementById('link-tk').href = p.tk || '#';
+        if (document.getElementById('player-bio')) document.getElementById('player-bio').innerText = bio;
+        if (document.getElementById('player-img')) document.getElementById('player-img').src = img;
+        if (document.getElementById('link-ig')) document.getElementById('link-ig').href = p.ig || '#';
+        if (document.getElementById('link-tk')) document.getElementById('link-tk').href = p.tk || '#';
 
         updateModalData();
 
@@ -198,16 +236,16 @@ function updateModalData() {
 
     const stats = p.stats || {};
 
-    document.getElementById('modal-title').innerText = `DESEMPENHO: ${p.nick || ''}`;
-    document.getElementById('stat-kd-val').innerText = stats.kd !== undefined ? stats.kd : '0.00';
-    document.getElementById('stat-hs-val').innerText = (stats.hs !== undefined ? stats.hs : 0) + '%';
-    document.getElementById('stat-dmg-val').innerText = stats.dmg !== undefined ? stats.dmg : 0;
-    document.getElementById('stat-kp-val').innerText = (stats.kp !== undefined ? stats.kp : 0) + '%';
+    if (document.getElementById('modal-title')) document.getElementById('modal-title').innerText = `DESEMPENHO: ${p.nick || ''}`;
+    if (document.getElementById('stat-kd-val')) document.getElementById('stat-kd-val').innerText = stats.kd;
+    if (document.getElementById('stat-hs-val')) document.getElementById('stat-hs-val').innerText = stats.hs + '%';
+    if (document.getElementById('stat-dmg-val')) document.getElementById('stat-dmg-val').innerText = stats.dmg;
+    if (document.getElementById('stat-kp-val')) document.getElementById('stat-kp-val').innerText = stats.kp + '%';
 
-    document.getElementById('bar-kd').style.width = '0%';
-    document.getElementById('bar-hs').style.width = '0%';
-    document.getElementById('bar-dmg').style.width = '0%';
-    document.getElementById('bar-kp').style.width = '0%';
+    if (document.getElementById('bar-kd')) document.getElementById('bar-kd').style.width = '0%';
+    if (document.getElementById('bar-hs')) document.getElementById('bar-hs').style.width = '0%';
+    if (document.getElementById('bar-dmg')) document.getElementById('bar-dmg').style.width = '0%';
+    if (document.getElementById('bar-kp')) document.getElementById('bar-kp').style.width = '0%';
 }
 
 function toggleStatsModal(show) {
@@ -221,10 +259,10 @@ function toggleStatsModal(show) {
         modal.classList.add('active');
         
         setTimeout(() => {
-            document.getElementById('bar-kd').style.width = stats.kdPct || '0%';
-            document.getElementById('bar-hs').style.width = stats.hsPct || '0%';
-            document.getElementById('bar-dmg').style.width = stats.dmgPct || '0%';
-            document.getElementById('bar-kp').style.width = stats.kpPct || '0%';
+            if (document.getElementById('bar-kd')) document.getElementById('bar-kd').style.width = stats.kdPct;
+            if (document.getElementById('bar-hs')) document.getElementById('bar-hs').style.width = stats.hsPct;
+            if (document.getElementById('bar-dmg')) document.getElementById('bar-dmg').style.width = stats.dmgPct;
+            if (document.getElementById('bar-kp')) document.getElementById('bar-kp').style.width = stats.kpPct;
         }, 150);
     } else {
         modal.classList.remove('active');
@@ -282,13 +320,13 @@ function renderComparison() {
     const st1 = p1.stats || {};
     const st2 = p2.stats || {};
 
-    document.getElementById('p1-img').src = p1.img || 'https://via.placeholder.com/100?text=DP';
-    document.getElementById('p1-nick').innerText = p1.nick || '—';
-    document.getElementById('p1-role').innerText = p1.role || '—';
+    if (document.getElementById('p1-img')) document.getElementById('p1-img').src = p1.img || 'https://via.placeholder.com/100?text=DP';
+    if (document.getElementById('p1-nick')) document.getElementById('p1-nick').innerText = p1.nick || '—';
+    if (document.getElementById('p1-role')) document.getElementById('p1-role').innerText = p1.role || '—';
 
-    document.getElementById('p2-img').src = p2.img || 'https://via.placeholder.com/100?text=DP';
-    document.getElementById('p2-nick').innerText = p2.nick || '—';
-    document.getElementById('p2-role').innerText = p2.role || '—';
+    if (document.getElementById('p2-img')) document.getElementById('p2-img').src = p2.img || 'https://via.placeholder.com/100?text=DP';
+    if (document.getElementById('p2-nick')) document.getElementById('p2-nick').innerText = p2.nick || '—';
+    if (document.getElementById('p2-role')) document.getElementById('p2-role').innerText = p2.role || '—';
 
     setStatComparison('cmp-p1-kd', 'cmp-p2-kd', st1.kd || 0, st2.kd || 0, '');
     setStatComparison('cmp-p1-hs', 'cmp-p2-hs', st1.hs || 0, st2.hs || 0, '%');
@@ -323,7 +361,7 @@ function handleOutsideModalClick(event, modalId) {
     }
 }
 
-// Eventos Teclado
+// Eventos de Teclado
 document.addEventListener('keydown', (e) => {
     const statsModal = document.getElementById('stats-modal');
     const compareModal = document.getElementById('compare-modal');
@@ -340,21 +378,25 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Swipe Mobile
+// Touch / Swipe
 let touchStartX = 0;
 let touchEndX = 0;
-const sliderZone = document.getElementById('slider-zone');
 
-if (sliderZone) {
-    sliderZone.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
+document.addEventListener('DOMContentLoaded', () => {
+    const sliderZone = document.getElementById('slider-zone');
+    if (sliderZone) {
+        sliderZone.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
 
-    sliderZone.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, { passive: true });
-}
+        sliderZone.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+    }
+
+    fetchPlayersFromSupabase();
+});
 
 function handleSwipe() {
     const statsModal = document.getElementById('stats-modal');
@@ -367,6 +409,3 @@ function handleSwipe() {
     if (touchEndX < touchStartX - threshold) changePlayer(1);
     if (touchEndX > touchStartX + threshold) changePlayer(-1);
 }
-
-// Inicialização via Supabase
-document.addEventListener('DOMContentLoaded', fetchPlayersFromSupabase);
