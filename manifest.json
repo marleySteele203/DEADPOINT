@@ -1,20 +1,25 @@
 {
+  "id": "/",
   "name": "DEADPOINT E-SPORTS",
   "short_name": "DEADPOINT",
+  "description": "Plataforma oficial da DEADPOINT E-Sports. Acompanhe a line-up, próximos jogos, títulos e novidades em tempo real.",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0b0e14",
   "theme_color": "#ff4500",
   "icons": [
     {
       "src": "logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
