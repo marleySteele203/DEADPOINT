@@ -101,41 +101,49 @@ function getRoleColors(roleString) {
     return { primary: primaryColor, secondary: secondaryColor };
 }
 
-/* --- MINIATURAS (THUMBNAILS) --- */
+/* --- MINIATURAS (THUMBNAILS) COMPATÍVEIS COM TAILWIND --- */
 function renderThumbnails() {
     const container = document.getElementById('thumbnails-scroll');
     if (!container) return;
     container.innerHTML = '';
 
     if (players.length === 0) {
-        container.innerHTML = '<span style="color: #666; font-size: 14px;">Nenhum jogador cadastrado.</span>';
+        container.innerHTML = '<span class="text-gray-500 text-sm">Nenhum jogador cadastrado.</span>';
         return;
     }
 
+    const baseClasses = "flex-none w-[80px] h-[95px] bg-[#0b0e14] border rounded-xl cursor-pointer flex flex-col items-center justify-between p-1.5 transition-all duration-300 select-none";
+
     players.forEach((p, idx) => {
         const thumb = document.createElement('div');
-        thumb.className = `thumb-item ${idx === currentIndex ? 'active' : ''}`;
+        const activeClasses = idx === currentIndex 
+            ? "border-[#ff0055] opacity-100 scale-105 shadow-[0_0_15px_rgba(255,0,85,0.4)]" 
+            : "border-white/10 opacity-50 hover:opacity-80";
+
+        thumb.className = `${baseClasses} ${activeClasses}`;
         thumb.onclick = () => selectPlayerByIndex(idx);
 
         const imgSrc = p.img || 'https://via.placeholder.com/100?text=DP';
         const nickText = p.nick || 'JOGADOR';
 
         thumb.innerHTML = `
-            <img src="${imgSrc}" alt="${nickText}" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=DP';">
-            <span class="thumb-nick">${nickText}</span>
+            <img src="${imgSrc}" class="w-full h-[60px] object-contain pointer-events-none" alt="${nickText}" onerror="this.onerror=null; this.src='https://via.placeholder.com/100?text=DP';">
+            <span class="text-[11px] font-extrabold tracking-wider uppercase truncate max-w-full text-white">${nickText}</span>
         `;
         container.appendChild(thumb);
     });
 }
 
 function updateThumbnailsActive() {
-    const thumbs = document.querySelectorAll('.thumb-item');
+    const thumbs = document.querySelectorAll('#thumbnails-scroll > div');
+    const baseClasses = "flex-none w-[80px] h-[95px] bg-[#0b0e14] border rounded-xl cursor-pointer flex flex-col items-center justify-between p-1.5 transition-all duration-300 select-none";
+
     thumbs.forEach((t, i) => {
         if (i === currentIndex) {
-            t.classList.add('active');
+            t.className = `${baseClasses} border-[#ff0055] opacity-100 scale-105 shadow-[0_0_15px_rgba(255,0,85,0.4)]`;
             t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         } else {
-            t.classList.remove('active');
+            t.className = `${baseClasses} border-white/10 opacity-50 hover:opacity-80`;
         }
     });
 }
@@ -176,8 +184,9 @@ function updateShowcase(direction = 1) {
 
     isAnimating = true;
 
-    if (imgContainer) imgContainer.classList.add('slide-out-left');
-    if (infoSide) infoSide.classList.add('slide-out-right');
+    // Transição visual rápida
+    if (imgContainer) imgContainer.classList.add('opacity-0', '-translate-x-6');
+    if (infoSide) infoSide.classList.add('opacity-0', 'translate-x-6');
     if (watermark) watermark.style.opacity = "0";
 
     updateThumbnailsActive();
@@ -214,15 +223,15 @@ function updateShowcase(direction = 1) {
 
         updateModalData();
 
-        if (imgContainer) imgContainer.classList.remove('slide-out-left');
-        if (infoSide) infoSide.classList.remove('slide-out-right');
+        if (imgContainer) imgContainer.classList.remove('opacity-0', '-translate-x-6');
+        if (infoSide) infoSide.classList.remove('opacity-0', 'translate-x-6');
         if (watermark) watermark.style.opacity = "0.03";
 
         isAnimating = false;
-    }, 350);
+    }, 300);
 }
 
-/* --- MODAL ESTATÍSTICAS --- */
+/* --- MODAL ESTATÍSTICAS COM TAILWIND --- */
 function updateModalData() {
     if (players.length === 0) return;
     const p = players[currentIndex];
@@ -256,7 +265,8 @@ function toggleStatsModal(show) {
 
     if (show) {
         updateModalData();
-        modal.classList.add('active');
+        modal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+        modal.classList.add('flex', 'opacity-100');
         
         setTimeout(() => {
             if (document.getElementById('bar-kd')) document.getElementById('bar-kd').style.width = stats.kdPct;
@@ -265,11 +275,12 @@ function toggleStatsModal(show) {
             if (document.getElementById('bar-kp')) document.getElementById('bar-kp').style.width = stats.kpPct;
         }, 150);
     } else {
-        modal.classList.remove('active');
+        modal.classList.remove('flex', 'opacity-100');
+        modal.classList.add('hidden', 'pointer-events-none', 'opacity-0');
     }
 }
 
-/* --- MODO COMPARATIVO (VERSUS) --- */
+/* --- MODO COMPARATIVO (VERSUS) COM TAILWIND --- */
 function populateCompareSelects() {
     const s1 = document.getElementById('select-p1');
     const s2 = document.getElementById('select-p2');
@@ -300,8 +311,14 @@ function openCompareModal() {
 function toggleCompareModal(show) {
     const modal = document.getElementById('compare-modal');
     if (!modal) return;
-    if (show) modal.classList.add('active');
-    else modal.classList.remove('active');
+
+    if (show) {
+        modal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
+        modal.classList.add('flex', 'opacity-100');
+    } else {
+        modal.classList.remove('flex', 'opacity-100');
+        modal.classList.add('hidden', 'pointer-events-none', 'opacity-0');
+    }
 }
 
 function renderComparison() {
@@ -342,15 +359,16 @@ function setStatComparison(id1, id2, val1, val2, suffix) {
     el1.innerText = val1 + suffix;
     el2.innerText = val2 + suffix;
 
-    el1.classList.remove('winner', 'loser');
-    el2.classList.remove('winner', 'loser');
+    // Reseta classes Tailwind
+    el1.className = 'font-black text-lg text-white transition-colors duration-200';
+    el2.className = 'font-black text-lg text-white transition-colors duration-200';
 
     if (val1 > val2) {
-        el1.classList.add('winner');
-        el2.classList.add('loser');
+        el1.classList.add('text-green-400', 'scale-110');
+        el2.classList.add('text-red-500/60');
     } else if (val2 > val1) {
-        el2.classList.add('winner');
-        el1.classList.add('loser');
+        el2.classList.add('text-green-400', 'scale-110');
+        el1.classList.add('text-red-500/60');
     }
 }
 
@@ -366,8 +384,8 @@ document.addEventListener('keydown', (e) => {
     const statsModal = document.getElementById('stats-modal');
     const compareModal = document.getElementById('compare-modal');
 
-    const statsModalActive = statsModal && statsModal.classList.contains('active');
-    const compareModalActive = compareModal && compareModal.classList.contains('active');
+    const statsModalActive = statsModal && !statsModal.classList.contains('hidden');
+    const compareModalActive = compareModal && !compareModal.classList.contains('hidden');
 
     if (e.key === 'Escape') {
         if (statsModalActive) toggleStatsModal(false);
@@ -402,8 +420,8 @@ function handleSwipe() {
     const statsModal = document.getElementById('stats-modal');
     const compareModal = document.getElementById('compare-modal');
 
-    if ((statsModal && statsModal.classList.contains('active')) || 
-        (compareModal && compareModal.classList.contains('active'))) return;
+    if ((statsModal && !statsModal.classList.contains('hidden')) || 
+        (compareModal && !compareModal.classList.contains('hidden'))) return;
 
     const threshold = 50;
     if (touchEndX < touchStartX - threshold) changePlayer(1);

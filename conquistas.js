@@ -1,13 +1,23 @@
 // Configuração do Supabase Client
 const SUPABASE_URL = 'https://vqlntcqsgsgbgwejwsen.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_OKefDfosaW_yyjyLtLgMiA_3FyWl182';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Garante que o cliente Supabase está disponível antes da inicialização
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 let conquistasGlobais = [];
 
 // Busca dados da tabela 'achievements'
 async function carregarConquistas() {
     const trophyGrid = document.getElementById('trophy-grid');
+
+    if (!supabaseClient) {
+        console.error('Supabase Client não foi inicializado. Verifique se o CDN do Supabase está importado no HTML.');
+        if (trophyGrid) {
+            trophyGrid.innerHTML = `<p style="color: #ff4d4d; grid-column: 1/-1; text-align: center;">Erro: Biblioteca Supabase não carregada.</p>`;
+        }
+        return;
+    }
 
     try {
         const { data: conquistas, error } = await supabaseClient
@@ -31,7 +41,8 @@ async function carregarConquistas() {
 
 // Verifica se é TOP 1 (Ouro) de forma rigorosa baseada no placement
 function checarSeEhOuro(placement) {
-    const pos = (placement || '').toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    if (!placement) return false;
+    const pos = String(placement).toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
     
     // Retorna verdadeiro se for estritamente TOP 1, 1º lugar ou campeão
     return pos.includes('TOP 1') || 
@@ -48,7 +59,7 @@ function renderizarTrofeus(lista) {
     trophyGrid.innerHTML = '';
 
     if (lista.length === 0) {
-        trophyGrid.innerHTML = `<p style="color: #aaa; grid-column: 1/-1; text-align: center;">Nenhum título cadastrado até o momento.</p>`;
+        trophyGrid.innerHTML = `<p style="color: #aaa; grid-column: 1/-1; text-align: center; padding: 20px;">Nenhum título cadastrado até o momento.</p>`;
         return;
     }
 
@@ -62,7 +73,6 @@ function renderizarTrofeus(lista) {
         const card = document.createElement('div');
         card.className = `trophy-card ${tierClass}`;
         card.setAttribute('data-category', categoryAttr);
-        // Usa o ID do banco em vez do index do array para segurança
         card.onclick = () => abrirModalPorId(item.id);
 
         card.innerHTML = `
@@ -129,10 +139,15 @@ function abrirModalPorId(id) {
     const item = conquistasGlobais.find(conq => conq.id === id);
     if (!item) return;
 
-    document.getElementById('modal-titulo').innerText = item.title || 'Título';
-    document.getElementById('modal-tag').innerText = `${item.game || 'FREE FIRE'} — ${item.date || ''} (Prêmio: ${item.prize || 'N/A'})`;
-    document.getElementById('modal-badge').innerText = item.placement || 'PÓDIO';
-    document.getElementById('modal-desc').innerText = item.description || 'Nenhum detalhe adicional fornecido.';
+    const modalTitulo = document.getElementById('modal-titulo');
+    const modalTag = document.getElementById('modal-tag');
+    const modalBadge = document.getElementById('modal-badge');
+    const modalDesc = document.getElementById('modal-desc');
+
+    if (modalTitulo) modalTitulo.innerText = item.title || 'Título';
+    if (modalTag) modalTag.innerText = `${item.game || 'FREE FIRE'} — ${item.date || ''} (Prêmio: ${item.prize || 'N/A'})`;
+    if (modalBadge) modalBadge.innerText = item.placement || 'PÓDIO';
+    if (modalDesc) modalDesc.innerText = item.description || 'Nenhum detalhe adicional fornecido.';
 
     const grid = document.getElementById('modal-players-grid');
     if (grid) {
@@ -144,17 +159,17 @@ function abrirModalPorId(id) {
             players = [];
         }
 
-        if (players.length > 0) {
+        if (Array.isArray(players) && players.length > 0) {
             players.forEach(p => {
                 const playerCard = document.createElement('div');
                 playerCard.className = 'player-hover-card';
                 playerCard.innerHTML = `
                     <div class="player-photo-container">
-                        <img src="${p.foto || 'default.png'}" alt="${p.nick}">
+                        <img src="${p.foto || 'default.png'}" alt="${p.nick || 'Player'}">
                     </div>
                     <div class="player-details-reveal">
-                        <span class="player-nick">${p.nick}</span>
-                        <span class="player-role">${p.role}</span>
+                        <span class="player-nick">${p.nick || 'Player'}</span>
+                        <span class="player-role">${p.role || 'RUSH'}</span>
                     </div>
                 `;
                 grid.appendChild(playerCard);
@@ -173,15 +188,20 @@ function fecharModal() {
     if (modal) modal.classList.remove('active');
 }
 
-window.onclick = function(event) {
+// Fechar modal com cliques fora ou tecla ESC
+window.addEventListener('click', (event) => {
     const modal = document.getElementById('modal-conquista');
-    if (event.target === modal) {
-        fecharModal();
-    }
-};
+    if (event.target === modal) fecharModal();
+});
+
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') fecharModal();
+});
 
 // Escuta atualizações em tempo real direto da tabela 'achievements'
 function escutarAlteracoesRealtime() {
+    if (!supabaseClient) return;
+
     supabaseClient
         .channel('achievements-realtime')
         .on(
@@ -194,7 +214,8 @@ function escutarAlteracoesRealtime() {
         .subscribe();
 }
 
-window.onload = () => {
+// Inicializa a aplicação quando a página carrega
+document.addEventListener('DOMContentLoaded', () => {
     carregarConquistas();
     escutarAlteracoesRealtime();
-};
+});

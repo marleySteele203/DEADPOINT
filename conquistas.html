@@ -3,130 +3,391 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEADPOINT | Hall da Fama</title>
+    <title>DEADPOINT | Hall da Fama & Conquistas</title>
     
-    <!-- Supabase JS Client -->
+    <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Font Awesome & Google Fonts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="conquistas.css">
+    <!-- Ícones Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN com o mesmo padrão da Landing Page -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              deadpoint: {
+                black: '#070a12',
+                blue: '#0d1527',
+                navy: '#0b1120',
+                orange: '#ff5500',
+                'orange-hover': '#e64d00'
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- CSS Customizado Integrado para Suporte aos Cards do JS -->
+    <style>
+      /* Estilização dos Cards gerados dinamicamente via conquistas.js */
+      .trophy-card {
+        background: rgba(13, 21, 39, 0.8);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(51, 65, 85, 0.8);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-space-between;
+      }
+
+      .trophy-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .trophy-card.gold-tier {
+        border-color: rgba(255, 215, 0, 0.4);
+      }
+      .trophy-card.gold-tier:hover {
+        box-shadow: 0 10px 25px -5px rgba(255, 215, 0, 0.25);
+        border-color: rgba(255, 215, 0, 0.8);
+      }
+
+      .trophy-card.silver-tier {
+        border-color: rgba(192, 192, 192, 0.3);
+      }
+      .trophy-card.silver-tier:hover {
+        box-shadow: 0 10px 25px -5px rgba(192, 192, 192, 0.2);
+        border-color: rgba(192, 192, 192, 0.7);
+      }
+
+      .trophy-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .gold-tier .trophy-badge {
+        background: rgba(255, 215, 0, 0.15);
+        color: #ffd700;
+        border: 1px solid rgba(255, 215, 0, 0.4);
+      }
+
+      .silver-tier .trophy-badge {
+        background: rgba(192, 192, 192, 0.15);
+        color: #e2e8f0;
+        border: 1px solid rgba(192, 192, 192, 0.3);
+      }
+
+      .trophy-icon-box {
+        width: 3.25rem;
+        height: 3.25rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .gold-tier .trophy-icon-box {
+        background: rgba(255, 215, 0, 0.1);
+        color: #ffd700;
+      }
+
+      .silver-tier .trophy-icon-box {
+        background: rgba(192, 192, 192, 0.1);
+        color: #c0c0c0;
+      }
+
+      .trophy-info h2 {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #ffffff;
+        line-height: 1.2;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+      }
+
+      .tournament-tag {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #ff5500;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 0.75rem;
+      }
+
+      .trophy-desc {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        margin-bottom: 1.25rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .trophy-footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      /* Botões de Filtro Ativos */
+      .filter-btn.active {
+        background-color: #ff5500 !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
+      }
+
+      /* Modal */
+      #modal-conquista.hidden {
+        display: none !important;
+      }
+      #modal-conquista.flex {
+        display: flex !important;
+      }
+
+      .player-hover-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(51, 65, 85, 0.6);
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.2s ease;
+      }
+      .player-hover-card:hover {
+        border-color: #ff5500;
+        background: rgba(15, 23, 42, 0.9);
+      }
+      .player-photo-container img {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 9999px;
+        object-fit: cover;
+        border: 2px solid #ff5500;
+      }
+      .player-nick {
+        display: block;
+        font-weight: 800;
+        color: #ffffff;
+        font-size: 0.95rem;
+        line-height: 1;
+      }
+      .player-role {
+        display: block;
+        font-size: 0.7rem;
+        color: #ff5500;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 0.2rem;
+      }
+    </style>
+
+    <!-- Carrega o script conquistas.js -->
+    <script src="conquistas.js" defer></script>
 </head>
-<body class="conquistas-body">
+<body class="bg-deadpoint-black text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Efeitos de Fundo -->
-    <div class="hero-victory-bg"></div>
-    <div class="cyber-grid"></div>
-    <div class="watermark">GLORY</div>
+    <!-- NAV BAR (Idêntica à Landing Page) -->
+    <header class="sticky top-0 z-50 bg-deadpoint-navy/90 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo sem ícone de mira -->
+            <a href="index.html" class="text-2xl sm:text-3xl font-black tracking-wider text-white">
+                DEAD<span class="text-deadpoint-orange">POINT</span>
+            </a>
+            
+            <!-- Botão Menu Mobile -->
+            <div class="md:hidden text-2xl text-slate-200 cursor-pointer p-2 hover:text-deadpoint-orange transition" id="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
 
-    <!-- NAVBAR COM LOGOTIPO ORIGINAL DEADPOINT -->
-    <header>
-        <nav class="navbar">
-            <div class="logo">DEAD<span>POINT</span></div>
-            <ul>
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="lineup.html">LINE-UP</a></li>
-                <li><a href="conquistas.html" class="active">TÍTULOS</a></li>
-                <li><a href="agenda.html">AGENDA</a></li>
+            <!-- Links de Navegação Desktop -->
+            <nav class="hidden md:block">
+                <ul class="nav-list flex items-center gap-8 font-semibold text-sm uppercase tracking-wide">
+                    <li><a href="index.html" class="text-slate-300 hover:text-deadpoint-orange transition">Home</a></li>
+                    <li><a href="lineup.html" class="text-slate-300 hover:text-deadpoint-orange transition">Line-up</a></li>
+                    <li><a href="conquistas.html" class="text-deadpoint-orange border-b-2 border-deadpoint-orange pb-1">Títulos</a></li>
+                    <li><a href="agenda.html" class="text-slate-300 hover:text-deadpoint-orange transition">Agenda</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Menu Mobile Suspenso (Dropdown) -->
+        <div class="md:hidden hidden bg-deadpoint-blue border-b border-slate-800" id="mobile-nav-container">
+            <ul class="nav-list flex flex-col p-4 space-y-3 font-semibold text-sm uppercase">
+                <li><a href="index.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Home</a></li>
+                <li><a href="lineup.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Line-up</a></li>
+                <li><a href="conquistas.html" class="text-deadpoint-orange block py-1">Títulos</a></li>
+                <li><a href="agenda.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Agenda</a></li>
             </ul>
-        </nav>
+        </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL (HUD CONTAINER) -->
-    <main class="hud-container">
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
         
-        <!-- HEADER ESTILO TERMINAL HUD -->
-        <div class="terminal-header">
-            <div class="sys-status">
-                <div class="pulse-dot"></div>
-                <span>HALL DA FAMA // STATUS: ATIVO</span>
-                <div class="hud-clock" id="live-clock">00:00:00</div>
-            </div>
-            <h1>Nossa <span>Trajetória</span></h1>
-            <p class="crypto-sub">Onde o esforço se transforma em glória. Cada troféu carrega a história, o sangue e a dedicação da LINE DEADPOINT no cenário competitivo.</p>
+        <!-- CABEÇALHO DA PÁGINA -->
+        <div class="bg-deadpoint-navy/60 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-md space-y-3">
+            <h1 class="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white">
+                Galeria de <span class="text-deadpoint-orange">Conquistas</span>
+            </h1>
+            <p class="text-slate-300 text-sm sm:text-base max-w-3xl leading-relaxed font-medium">
+                Histórico oficial de vitórias, pódios e títulos conquistados pela <strong class="text-white">DEADPOINT ESPORTS</strong>. Cada troféu representa nossa disciplina e precisão nos campos de batalha.
+            </p>
         </div>
 
-        <!-- PAINEL DE ESTATÍSTICAS TÁTICO -->
-        <div class="stats-banner" style="display: flex; gap: 20px; margin-bottom: 25px; flex-wrap: wrap;">
-            <div class="stat-item" style="background: #0b0e14; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 20px; flex: 1; display: flex; align-items: center; gap: 15px;">
-                <i class="fa-solid fa-trophy" style="color: #ffd700; font-size: 28px;"></i>
+        <!-- HUD DE ESTATÍSTICAS -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-deadpoint-blue/80 border border-slate-800/80 rounded-2xl p-5 flex items-center gap-4 shadow-lg">
+                <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-deadpoint-orange text-2xl">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
                 <div>
-                    <span id="total-trofeus" class="stat-number" style="font-size: 24px; font-weight: 900; color: #fff;">0</span>
-                    <span class="stat-label" style="display: block; color: #a0aec0; font-size: 13px; font-weight: 700; text-transform: uppercase;">Total de Troféus</span>
+                    <span id="total-trofeus" class="text-3xl font-black text-white block leading-none">0</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Total de Conquistas</span>
                 </div>
             </div>
-            <div class="stat-item" style="background: #0b0e14; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 20px; flex: 1; display: flex; align-items: center; gap: 15px;">
-                <i class="fa-solid fa-medal" style="color: #00ffff; font-size: 28px;"></i>
+
+            <div class="bg-deadpoint-blue/80 border border-slate-800/80 rounded-2xl p-5 flex items-center gap-4 shadow-lg">
+                <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
                 <div>
-                    <span id="total-ouros" class="stat-number" style="font-size: 24px; font-weight: 900; color: #fff;">0</span>
-                    <span class="stat-label" style="display: block; color: #a0aec0; font-size: 13px; font-weight: 700; text-transform: uppercase;">1º Lugares (Ouro)</span>
+                    <span id="total-ouros" class="text-3xl font-black text-amber-400 block leading-none">0</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">1º Lugares (Ouro)</span>
                 </div>
             </div>
-            <div class="stat-item" style="background: #0b0e14; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 20px; flex: 1; display: flex; align-items: center; gap: 15px;">
-                <i class="fa-solid fa-shield-halved" style="color: #c0c0c0; font-size: 28px;"></i>
+
+            <div class="bg-deadpoint-blue/80 border border-slate-800/80 rounded-2xl p-5 flex items-center gap-4 shadow-lg">
+                <div class="w-12 h-12 rounded-xl bg-slate-400/10 border border-slate-400/30 flex items-center justify-center text-slate-300 text-2xl">
+                    <i class="fa-solid fa-medal"></i>
+                </div>
                 <div>
-                    <span id="total-pratas" class="stat-number" style="font-size: 24px; font-weight: 900; color: #fff;">0</span>
-                    <span class="stat-label" style="display: block; color: #a0aec0; font-size: 13px; font-weight: 700; text-transform: uppercase;">2º Lugares (Prata)</span>
+                    <span id="total-pratas" class="text-3xl font-black text-slate-300 block leading-none">0</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">2º Lugares (Prata)</span>
                 </div>
             </div>
         </div>
 
-        <!-- BARRA DE FILTROS HUD -->
-        <div class="hud-controls-bar" style="margin-bottom: 25px;">
-            <div class="hud-filters">
-                <button class="filter-btn active" onclick="filtrarTrofeus('all', event)">Todos os Títulos</button>
-                <button class="filter-btn" onclick="filtrarTrofeus('gold', event)"><i class="fa-solid fa-trophy"></i> Ouro (1º)</button>
-                <button class="filter-btn" onclick="filtrarTrofeus('silver', event)"><i class="fa-solid fa-medal"></i> Prata (2º)</button>
+        <!-- FILTROS DE PESQUISA -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-deadpoint-navy/60 p-3 rounded-2xl border border-slate-800/80">
+            <div class="flex items-center gap-2 bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 overflow-x-auto">
+                <button class="filter-btn active px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-300 hover:text-white transition whitespace-nowrap" onclick="filtrarTrofeus('all', event)">
+                    <i class="fa-solid fa-border-all mr-1.5"></i> Todos
+                </button>
+                <button class="filter-btn px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-300 hover:text-white transition whitespace-nowrap" onclick="filtrarTrofeus('gold', event)">
+                    <i class="fa-solid fa-trophy text-amber-400 mr-1.5"></i> Ouro (1º)
+                </button>
+                <button class="filter-btn px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-300 hover:text-white transition whitespace-nowrap" onclick="filtrarTrofeus('silver', event)">
+                    <i class="fa-solid fa-medal text-slate-300 mr-1.5"></i> Prata (2º)
+                </button>
+            </div>
+
+            <div class="text-xs font-bold text-slate-400 flex items-center justify-center sm:justify-end gap-2 px-3 py-1">
+                <i class="fa-solid fa-circle-info text-deadpoint-orange"></i>
+                <span>Clique no card para ver a Line-up participante</span>
             </div>
         </div>
 
-        <!-- DICA DE INTERAÇÃO -->
-        <div class="interaction-tip" style="margin-bottom: 25px; color: #00ffff; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-circle-info"></i> <span>Clique em qualquer card de título abaixo para ver a descrição completa e a line-up que conquistou a vitória!</span>
-        </div>
-
-        <!-- GRADE DE TROFÉUS (Alimentada pelo Supabase) -->
-        <div class="trophy-grid" id="trophy-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-            <p style="color: #a0aec0; grid-column: 1/-1; text-align: center; font-weight: 700;">Carregando conquistas do Supabase...</p>
+        <!-- GRID DE TROFÉUS (PREENCHIDO VIA JS) -->
+        <div id="trophy-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[300px]">
+            <div class="col-span-full flex flex-col items-center justify-center py-16 text-slate-400 space-y-3">
+                <i class="fa-solid fa-circle-notch fa-spin text-3xl text-deadpoint-orange"></i>
+                <p class="font-bold text-sm tracking-wide">A carregar conquistas...</p>
+            </div>
         </div>
 
     </main>
 
     <!-- MODAL DE DETALHES DA CONQUISTA -->
-    <div class="modal-overlay" id="modal-conquista">
-        <div class="modal-content">
-            <button class="modal-close" onclick="fecharModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-header-info">
-                <span id="modal-badge" class="modal-badge">1º LUGAR</span>
-                <h2 id="modal-titulo">Nome do Torneio</h2>
-                <span id="modal-tag" class="modal-tag">Season 01</span>
-                <p id="modal-desc">Descrição detalhada do torneio...</p>
+    <div id="modal-conquista" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-deadpoint-blue border border-slate-700/80 rounded-2xl p-6 sm:p-8 max-w-lg w-full relative space-y-5 shadow-2xl" onclick="event.stopPropagation()">
+            
+            <button onclick="fecharModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-800/80 border border-slate-700 text-slate-400 hover:text-white hover:bg-deadpoint-orange transition flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="space-y-2 pr-6">
+                <span id="modal-badge" class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/30 inline-block">
+                    1º LUGAR
+                </span>
+                <h2 id="modal-titulo" class="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide leading-tight">
+                    Nome do Torneio
+                </h2>
+                <div id="modal-tag" class="text-xs font-bold text-deadpoint-orange uppercase tracking-wider">
+                    FREE FIRE — 2026
+                </div>
             </div>
 
-            <div class="modal-lineup-section">
-                <h3><i class="fa-solid fa-users"></i> Line-up Participante 
-                    <span class="modal-player-tip">
-                        <i class="fa-solid fa-hand-pointer"></i> Passe o mouse nos cards para ver o Nick e a Função
-                    </span>
+            <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
+                <p id="modal-desc" class="text-sm text-slate-300 leading-relaxed font-medium">
+                    Detalhes sobre a partida e conquista...
+                </p>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                    <i class="fa-solid fa-users text-deadpoint-orange"></i>
+                    <span>Line-up Participante</span>
                 </h3>
-                <div class="modal-players-grid" id="modal-players-grid"></div>
+                <div id="modal-players-grid" class="grid grid-cols-2 gap-3">
+                    <!-- Jogadores inseridos via conquistas.js -->
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button onclick="fecharModal()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider transition">
+                    Fechar
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Script de Relógio do HUD -->
-    <script>
-        setInterval(() => {
-            const now = new Date();
-            const clock = document.getElementById('live-clock');
-            if(clock) {
-                clock.innerText = now.toTimeString().split(' ')[0];
-            }
-        }, 1000);
-    </script>
+    <!-- RODAPÉ -->
+    <footer class="border-t border-slate-800/80 bg-deadpoint-navy/60 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                &copy; 2026 <span class="text-deadpoint-orange">DEADPOINT ESPORTS</span> — Todos os direitos reservados.
+            </p>
+        </div>
+    </footer>
 
-    <!-- Script Principal -->
-    <script src="conquistas.js"></script>
+    <!-- SCRIPT DE NAVEGAÇÃO MOBILE HAMBÚRGUER -->
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navContainer = document.getElementById('mobile-nav-container');
+
+        mobileMenu.addEventListener('click', () => {
+            navContainer.classList.toggle('hidden');
+            const icon = mobileMenu.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        });
+    </script>
 </body>
 </html>

@@ -4,80 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEADPOINT | Recrutamento Oficial</title>
-    <link rel="stylesheet" href="recrutamento.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              deadpoint: {
+                black: '#070a12',
+                blue: '#0d1527',
+                navy: '#0b1120',
+                orange: '#ff5500',
+                'orange-hover': '#e64d00'
+              }
+            },
+            keyframes: {
+              'fadeIn': {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' }
+              },
+              'popIn': {
+                '0%': { opacity: '0', transform: 'scale(0.95)' },
+                '100%': { opacity: '1', transform: 'scale(1)' }
+              }
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.4s ease-out forwards',
+              'pop-in': 'popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+            }
+          }
+        }
+      }
+    </script>
+
     <!-- Font Awesome & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Script JS Linkado -->
+    <script src="recrutamento.js" defer></script>
 </head>
-<body class="recruitment-body">
+<body class="bg-deadpoint-black text-slate-100 font-['Rajdhani',sans-serif] antialiased min-h-screen flex flex-col justify-between overflow-x-hidden relative">
 
-    <!-- Fundo Tático com Grid Animado -->
-    <div class="cyber-grid"></div>
-    <div id="bg-watermark" class="watermark">RECRUIT</div>
+    <!-- Fundo Tático com Grid Animado & Marca d'água -->
+    <div class="fixed inset-0 bg-[linear-gradient(to_right,#1f293710_1px,transparent_1px),linear-gradient(to_bottom,#1f293710_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none z-0"></div>
+    <div id="bg-watermark" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] font-black text-slate-800/10 select-none pointer-events-none z-0 tracking-widest uppercase transition-all duration-500">
+        RECRUIT
+    </div>
 
-    <!-- Sistema de Notificações Toast -->
-    <div id="toast-container" class="toast-container"></div>
+    <!-- Container do Toast -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
 
     <!-- NAVBAR -->
-    <header class="recrutamento-header">
-        <div class="navbar">
-            <div class="logo">DEAD<span>POINT</span></div>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="lineup.html">Line-up</a></li>
-                    <li><a href="conquistas.html">Títulos</a></li>
-                    <li><a href="agenda.html">Agenda</a></li>
+    <header class="sticky top-0 z-50 bg-deadpoint-navy/90 backdrop-blur-md border-b border-slate-800/80 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="text-2xl sm:text-3xl font-black tracking-wider text-white select-none hover:scale-105 transition-transform duration-200 cursor-pointer">
+                DEAD<span class="text-deadpoint-orange">POINT</span>
+            </a>
+
+            <!-- Botão Menu Mobile (Hambúrguer) -->
+            <div class="md:hidden text-2xl text-slate-200 cursor-pointer p-2 hover:text-deadpoint-orange transition" id="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+            <!-- Links Desktop -->
+            <nav class="hidden md:block">
+                <ul class="flex items-center gap-8 font-semibold text-sm uppercase tracking-wide">
+                    <li><a href="index.html" class="text-slate-300 hover:text-deadpoint-orange transition-colors duration-200">Home</a></li>
+                    <li><a href="lineup.html" class="text-slate-300 hover:text-deadpoint-orange transition-colors duration-200">Line-up</a></li>
+                    <li><a href="conquistas.html" class="text-slate-300 hover:text-deadpoint-orange transition-colors duration-200">Títulos</a></li>
+                    <li><a href="agenda.html" class="text-slate-300 hover:text-deadpoint-orange transition-colors duration-200">Agenda</a></li>
                 </ul>
             </nav>
+        </div>
+
+        <!-- Menu Mobile Suspenso (Dropdown) -->
+        <div class="md:hidden hidden bg-deadpoint-blue border-b border-slate-800" id="mobile-nav-container">
+            <ul class="flex flex-col p-4 space-y-3 font-semibold text-sm uppercase tracking-wide">
+                <li><a href="index.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Home</a></li>
+                <li><a href="lineup.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Line-up</a></li>
+                <li><a href="conquistas.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Títulos</a></li>
+                <li><a href="agenda.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Agenda</a></li>
+            </ul>
         </div>
     </header>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <main class="recrutamento-container">
-        <div class="recrutamento-showcase">
+    <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full items-stretch">
             
             <!-- Lado Esquerdo: Informações e Requisitos -->
-            <div class="status-side">
-                <div class="badge-wrapper">
-                    <span class="status-tag" id="status-tag"><i class="fa-solid fa-circle"></i> Status</span>
+            <div class="flex flex-col justify-center space-y-6">
+                <div>
+                    <span id="status-tag" class="inline-flex items-center gap-2 bg-slate-900/80 border border-slate-800 text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-4">
+                        <i class="fa-solid fa-circle text-[8px]"></i> Status
+                    </span>
+                    <h1 id="status-title" class="text-4xl sm:text-5xl font-black uppercase tracking-tight text-white leading-none">
+                        Recrutamento
+                    </h1>
+                    <p class="text-slate-400 text-base leading-relaxed mt-4" id="status-desc">
+                        Buscamos jogadores altamente dedicados, com mentalidade competitiva avançada e prontos para representar a nossa tag em alto nível nos campeonatos.
+                    </p>
                 </div>
-                
-                <h1 id="status-title">Recrutamento</h1>
-                <p class="status-description" id="status-desc">Buscamos jogadores altamente dedicados, com mentalidade competitiva avançada e prontos para representar a nossa tag em alto nível nos campeonatos.</p>
-                
-                <div class="requisitos-box">
-                    <h4><i class="fa-solid fa-shield-halved"></i> Requisitos Mínimos</h4>
-                    <ul class="requisitos-list">
-                        <li><i class="fa-solid fa-check"></i> Disponibilidade absoluta para treinos diários</li>
-                        <li><i class="fa-solid fa-microphone"></i> Microfone limpo e boa comunicação em call</li>
-                        <li><i class="fa-solid fa-bolt"></i> Respeito à liderança e disciplina tática</li>
-                        <li><i class="fa-solid fa-trophy"></i> Experiência prévia em campeonatos e campeirismos</li>
+
+                <div class="bg-deadpoint-navy/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-md space-y-4">
+                    <h4 class="text-lg font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-deadpoint-orange"></i> Requisitos Mínimos
+                    </h4>
+                    <ul class="space-y-3 text-sm text-slate-300 font-semibold">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-check text-deadpoint-orange mt-1"></i>
+                            <span>Disponibilidade absoluta para treinos diários</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-microphone text-deadpoint-orange mt-1"></i>
+                            <span>Microfone limpo e boa comunicação em call</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-bolt text-deadpoint-orange mt-1"></i>
+                            <span>Respeito à liderança e disciplina tática</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-trophy text-deadpoint-orange mt-1"></i>
+                            <span>Experiência prévia em campeonatos e campeirismos</span>
+                        </li>
                     </ul>
                 </div>
             </div>
 
             <!-- Lado Direito: Formulário ou Mensagem de Fechado -->
-            <div class="form-side" id="form-card">
+            <div class="bg-deadpoint-blue/80 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-md shadow-2xl flex flex-col justify-center relative overflow-hidden" id="form-card">
                 
                 <!-- Formulário Ativo -->
-                <div class="form-content" id="form-container">
-                    <div class="form-header-title">
-                        <h2>Faça Parte da Line</h2>
-                        <p>Preencha os dados abaixo com atenção</p>
+                <div class="space-y-6" id="form-container">
+                    <div>
+                        <h2 class="text-2xl font-extrabold uppercase text-white tracking-wide">Faça Parte da Line</h2>
+                        <p class="text-xs text-slate-400 font-medium">Preencha os dados abaixo com atenção</p>
+                        <div class="h-1 w-12 bg-deadpoint-orange rounded-full mt-2"></div>
                     </div>
-                    <div class="form-divider"></div>
                     
-                    <form id="form-inscricao" class="inputs-grid" onsubmit="enviarParaDiscord(event)">
-                        
-                        <div class="input-group">
-                            <label><i class="fa-solid fa-user-tag"></i> Nickname em Jogo</label>
-                            <input type="text" id="player-nick" placeholder="Ex: DP MELI" required autocomplete="off" oninput="salvarRascunho()">
+                    <form id="form-inscricao" class="space-y-4">
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                                <i class="fa-solid fa-user-tag text-deadpoint-orange mr-1"></i> Nickname em Jogo
+                            </label>
+                            <input type="text" id="player-nick" placeholder="Ex: DP MELI" required autocomplete="off"
+                                class="w-full bg-deadpoint-navy/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-deadpoint-orange focus:ring-1 focus:ring-deadpoint-orange transition-all">
                         </div>
                         
-                        <div class="input-group">
-                            <label><i class="fa-solid fa-crosshairs"></i> Função Principal</label>
-                            <select id="player-role" onchange="verificarRole(this.value)" required>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                                <i class="fa-solid fa-crosshairs text-deadpoint-orange mr-1"></i> Função Principal
+                            </label>
+                            <select id="player-role" required
+                                class="w-full bg-deadpoint-navy/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-deadpoint-orange focus:ring-1 focus:ring-deadpoint-orange transition-all">
                                 <option value="" disabled selected hidden>Selecione sua role</option>
                                 <option value="SNIPER">SNIPER</option>
                                 <option value="GRANADEIRO">GRANADEIRO</option>
@@ -89,9 +171,12 @@
                         </div>
 
                         <!-- Campo Dinâmico para CPT -->
-                        <div class="input-group" id="grupo-especializacao">
-                            <label><i class="fa-solid fa-chess-king"></i> Especialização do CPT</label>
-                            <select id="player-specialization">
+                        <div class="space-y-1.5 hidden transition-all duration-300" id="grupo-especializacao">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                                <i class="fa-solid fa-chess-king text-deadpoint-orange mr-1"></i> Especialização do CPT
+                            </label>
+                            <select id="player-specialization"
+                                class="w-full bg-deadpoint-navy/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-deadpoint-orange focus:ring-1 focus:ring-deadpoint-orange transition-all">
                                 <option value="" disabled selected hidden>Selecione sua segunda role</option>
                                 <option value="SNIPER">SNIPER</option>
                                 <option value="GRANADEIRO">GRANADEIRO</option>
@@ -101,12 +186,25 @@
                             </select>
                         </div>
 
-                        <div class="input-group">
-                            <label><i class="fa-brands fa-instagram"></i> Instagram ou Contato</label>
-                            <input type="text" id="player-contact" placeholder="Ex: @marley_mahel_" required autocomplete="off" oninput="salvarRascunho()">
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                                <i class="fa-brands fa-instagram text-deadpoint-orange mr-1"></i> Instagram ou Contato
+                            </label>
+                            <input type="text" id="player-contact" placeholder="Ex: @marley_mahel_" required autocomplete="off"
+                                class="w-full bg-deadpoint-navy/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-deadpoint-orange focus:ring-1 focus:ring-deadpoint-orange transition-all">
+                        </div>
+
+                        <!-- Campo: Por que quer entrar na Line -->
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                                <i class="fa-solid fa-comment-dots text-deadpoint-orange mr-1"></i> Por que quer fazer parte da line?
+                            </label>
+                            <textarea id="player-motive" rows="3" placeholder="Explique suas intenções, objetivos e o que você agrega para a equipe..." required
+                                class="w-full bg-deadpoint-navy/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-deadpoint-orange focus:ring-1 focus:ring-deadpoint-orange transition-all resize-none"></textarea>
                         </div>
                         
-                        <button type="submit" id="btn-submit" class="btn-submit">
+                        <button type="submit" id="btn-submit"
+                            class="w-full mt-4 py-3.5 px-6 rounded-xl bg-deadpoint-orange hover:bg-deadpoint-orange-hover text-black font-extrabold text-sm uppercase tracking-wider transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20">
                             <span>Enviar Candidatura</span>
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
@@ -114,13 +212,18 @@
                 </div>
 
                 <!-- Mensagem de Inscrições Encerradas -->
-                <div class="form-content closed-message" id="closed-container" style="display: none;">
-                    <div class="closed-icon-glow">
+                <div class="hidden flex-col items-center justify-center text-center space-y-4 py-8 animate-pop-in" id="closed-container">
+                    <div class="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-500 flex items-center justify-center text-2xl shadow-lg shadow-rose-500/10">
                         <i class="fa-solid fa-lock"></i>
                     </div>
-                    <h3>Inscrições Encerradas</h3>
-                    <p>No momento a nossa line-up está completa e fechada para testes. Fique atento às nossas redes sociais para ser avisado na próxima janela de abertura de vagas.</p>
-                    <a href="https://www.instagram.com/_dead_point_" target="_blank" class="btn-hero primary" style="margin-top: 20px; display: inline-block;">Seguir no Instagram</a>
+                    <h3 class="text-2xl font-black uppercase text-white">Inscrições Encerradas</h3>
+                    <p class="text-slate-400 text-sm max-w-sm leading-relaxed">
+                        No momento a nossa line-up está completa e fechada para testes. Fique atento às nossas redes sociais para ser avisado na próxima janela de abertura de vagas.
+                    </p>
+                    <a href="https://www.instagram.com/_dead_point_" target="_blank" rel="noopener"
+                        class="inline-block mt-2 px-6 py-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-deadpoint-orange text-white text-xs font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105">
+                        Seguir no Instagram
+                    </a>
                 </div>
 
             </div>
@@ -128,175 +231,19 @@
         </div>
     </main>
 
-    <!-- SCRIPT DE CONTROLE, RASCUNHO E ENVIO -->
+    <!-- SCRIPT DA NAVEGAÇÃO MOBILE -->
     <script>
-        // ==========================================================
-        // CONTROLE DE STATUS DO RECRUTAMENTO (Mude para false para fechar)
-        // ==========================================================
-        const recrutamentoAberto = true; 
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navContainer = document.getElementById('mobile-nav-container');
 
-        function configurarPaginaRecrutamento() {
-            const tag = document.getElementById('status-tag');
-            const title = document.getElementById('status-title');
-            const desc = document.getElementById('status-desc');
-            const card = document.getElementById('form-card');
-            const formContainer = document.getElementById('form-container');
-            const closedContainer = document.getElementById('closed-container');
-            const watermark = document.getElementById('bg-watermark');
-
-            if (recrutamentoAberto) {
-                tag.innerHTML = `<i class="fa-solid fa-circle" style="color: #00ffff; font-size: 10px;"></i> Vagas Disponíveis`;
-                title.innerHTML = "Inscrições <span>Abertas</span>";
-                desc.innerText = "Nosso roster está em processo de expansão. Preencha o formulário tático ao lado para a staff analisar as suas estatísticas.";
-                
-                card.className = "form-side glow-open";
-                formContainer.style.display = "block";
-                closedContainer.style.display = "none";
-                watermark.innerText = "OPEN";
-                
-                carregarRascunho();
-            } else {
-                tag.innerHTML = `<i class="fa-solid fa-circle" style="color: #ff0055; font-size: 10px;"></i> Roster Fechado`;
-                title.innerHTML = "Recrutamento <span>Pausado</span>";
-                desc.innerText = "Atualmente todas as vagas oficiais foram preenchidas. A equipe encontra-se focada e em período de preparação para campeonatos.";
-                
-                card.className = "form-side glow-closed";
-                formContainer.style.display = "none";
-                closedContainer.style.display = "flex";
-                watermark.innerText = "CLOSED";
-            }
-        }
-
-        // ==========================================================
-        // SISTEMA DE NOTIFICAÇÕES TOAST (Substitui o alert())
-        // ==========================================================
-        function mostrarToast(mensagem, tipo = 'sucesso') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast-notification ${tipo}`;
-            
-            const icone = tipo === 'sucesso' ? 'fa-circle-check' : 'fa-triangle-exclamation';
-            
-            toast.innerHTML = `
-                <i class="fa-solid ${icone}"></i>
-                <span>${mensagem}</span>
-            `;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.add('fade-out');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
-
-        // ==========================================================
-        // SALVAMENTO AUTOMÁTICO DE RASCUNHO (LOCALSTORAGE)
-        // ==========================================================
-        function salvarRascunho() {
-            const rascunho = {
-                nick: document.getElementById('player-nick').value,
-                contact: document.getElementById('player-contact').value
-            };
-            localStorage.setItem('dp_recrutamento_rascunho', JSON.stringify(rascunho));
-        }
-
-        function carregarRascunho() {
-            const salvo = localStorage.getItem('dp_recrutamento_rascunho');
-            if (salvo) {
-                const dados = JSON.parse(salvo);
-                document.getElementById('player-nick').value = dados.nick || '';
-                document.getElementById('player-contact').value = dados.contact || '';
-            }
-        }
-
-        function limparRascunho() {
-            localStorage.removeItem('dp_recrutamento_rascunho');
-        }
-
-        // ==========================================================
-        // LÓGICA DE EXIBIÇÃO DA ESPECIALIZAÇÃO DO CPT
-        // ==========================================================
-        function verificarRole(valor) {
-            const grupoEspecializacao = document.getElementById('grupo-especializacao');
-            const selectEspecializacao = document.getElementById('player-specialization');
-
-            if (valor === "CPT") {
-                grupoEspecializacao.style.display = "block";
-                setTimeout(() => grupoEspecializacao.classList.add('mostrar'), 10);
-                selectEspecializacao.required = true;
-            } else {
-                grupoEspecializacao.classList.remove('mostrar');
-                setTimeout(() => {
-                    grupoEspecializacao.style.display = "none";
-                }, 300);
-                selectEspecializacao.required = false;
-                selectEspecializacao.value = ""; 
-            }
-        }
-
-        // ==========================================================
-        // ENVIO AUTOMATIZADO PARA O DISCORD (WEBHOOK)
-        // ==========================================================
-        function enviarParaDiscord(event) {
-            event.preventDefault();
-
-            const btnSubmit = document.getElementById('btn-submit');
-            const nick = document.getElementById('player-nick').value;
-            const role = document.getElementById('player-role').value;
-            const spec = document.getElementById('player-specialization').value;
-            const contact = document.getElementById('player-contact').value;
-
-            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Enviando dados...`;
-            btnSubmit.disabled = true;
-
-            const webhookURL = "https://discord.com/api/webhooks/1524955282424336425/4oi-s53iIMkFYuh7IB0f78vSvthzM3tdVq4E2NIX1HpNiVgGQl-RiOqDnELVrMyKznwm";
-
-            const roleFormatada = role === "CPT" ? `👑 CPT (Spec: ${spec})` : role;
-
-            const embedData = {
-                username: "DEADPOINT RECRUITMENT",
-                embeds: [{
-                    title: "📝 NOVA CANDIDATURA TÁTICA",
-                    color: 16711680,
-                    fields: [
-                        { name: "🎮 Nickname", value: `**${nick}**`, inline: true },
-                        { name: "🎯 Função / Role", value: roleFormatada, inline: true },
-                        { name: "📞 Contato / Instagram", value: contact, inline: false }
-                    ],
-                    footer: {
-                        text: "DEADPOINT Official Recruitment System"
-                    },
-                    timestamp: new Date().toISOString()
-                }]
-            };
-
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(embedData)
-            })
-            .then(response => {
-                if (response.ok) {
-                    mostrarToast('Candidatura enviada com sucesso para o QG! Boa sorte.', 'sucesso');
-                    document.getElementById('form-inscricao').reset();
-                    document.getElementById('grupo-especializacao').style.display = "none";
-                    limparRascunho();
-                } else {
-                    mostrarToast('Erro ao processar o envio. Verifique o Webhook.', 'erro');
-                }
-            })
-            .catch(error => {
-                console.error('Erro de rede:', error);
-                mostrarToast('Erro de conexão com os servidores do Discord.', 'erro');
-            })
-            .finally(() => {
-                btnSubmit.innerHTML = `<span>Enviar Candidatura</span> <i class="fa-solid fa-paper-plane"></i>`;
-                btnSubmit.disabled = false;
+        if (mobileMenu && navContainer) {
+            mobileMenu.addEventListener('click', () => {
+                navContainer.classList.toggle('hidden');
+                const icon = mobileMenu.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-xmark');
             });
         }
-
-        window.onload = configurarPaginaRecrutamento;
     </script>
 </body>
 </html>

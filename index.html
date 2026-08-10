@@ -5,107 +5,200 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEADPOINT | E-Sports Team</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="modal-buttons.css">
+    
     <!-- Ícones Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              deadpoint: {
+                black: '#070a12',
+                blue: '#0d1527',
+                navy: '#0b1120',
+                orange: '#ff5500',
+                'orange-hover': '#e64d00'
+              }
+            }
+          }
+        }
+      }
+    </script>
 </head>
-<body>
+<body class="bg-deadpoint-black text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
 
     <!-- NAV BAR -->
-    <header>
-        <div class="navbar">
-            <div class="logo">DEAD<span>POINT</span></div>
+    <header class="sticky top-0 z-50 bg-deadpoint-navy/90 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
-            <div class="menu-toggle" id="mobile-menu">
+            <!-- Logo -->
+            <div class="text-2xl sm:text-3xl font-black tracking-wider text-white">
+                DEAD<span class="text-deadpoint-orange">POINT</span>
+            </div>
+            
+            <!-- Botão Menu Mobile -->
+            <div class="md:hidden text-2xl text-slate-200 cursor-pointer p-2 hover:text-deadpoint-orange transition" id="mobile-menu">
                 <i class="fa-solid fa-bars"></i>
             </div>
 
-            <nav>
-                <ul class="nav-list">
-                    <li><a href="#" class="active">Home</a></li>
-                    <li><a href="lineup.html">Line-up</a></li>
-                    <li><a href="conquistas.html">Títulos</a></li>
-                    <li><a href="agenda.html">Agenda</a></li>
+            <!-- Links de Navegação -->
+            <nav class="hidden md:block">
+                <ul class="nav-list flex items-center gap-8 font-semibold text-sm uppercase tracking-wide">
+                    <li><a href="#" class="text-deadpoint-orange border-b-2 border-deadpoint-orange pb-1">Home</a></li>
+                    <li><a href="lineup.html" class="text-slate-300 hover:text-deadpoint-orange transition">Line-up</a></li>
+                    <li><a href="conquistas.html" class="text-slate-300 hover:text-deadpoint-orange transition">Títulos</a></li>
+                    <li><a href="agenda.html" class="text-slate-300 hover:text-deadpoint-orange transition">Agenda</a></li>
                 </ul>
             </nav>
+        </div>
+
+        <!-- Menu Mobile Suspenso (Dropdown) -->
+        <div class="md:hidden hidden bg-deadpoint-blue border-b border-slate-800" id="mobile-nav-container">
+            <ul class="nav-list flex flex-col p-4 space-y-3 font-semibold text-sm uppercase">
+                <li><a href="#" class="text-deadpoint-orange block py-1">Home</a></li>
+                <li><a href="lineup.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Line-up</a></li>
+                <li><a href="conquistas.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Títulos</a></li>
+                <li><a href="agenda.html" class="text-slate-300 hover:text-deadpoint-orange block py-1">Agenda</a></li>
+            </ul>
         </div>
     </header>
 
     <!-- HERO SECTION -->
-    <section class="hero">
-        <div class="hero-bg">
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070" alt="Deadpoint Combat">
+    <section class="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden py-12 px-4">
+        
+        <!-- Background Imagem + Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070" alt="Deadpoint Combat" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deadpoint-black via-deadpoint-black/80 to-deadpoint-black/40"></div>
         </div>
-        <div class="hero-overlay"></div>
 
-        <div class="hero-content">
-            <h1 class="animate-pop">DEAD<span>POINT</span></h1>
-            <p class="animate-fade">A mira é certa, o ponto é morto. Dominando o cenário competitivo com precisão absoluta.</p>
+        <div class="relative z-10 max-w-4xl mx-auto text-center space-y-8">
+            <!-- Título Principal -->
+            <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight text-white drop-shadow-2xl">
+                DEAD<span class="text-deadpoint-orange">POINT</span>
+            </h1>
             
-            <div class="hero-btns animate-fade">
-                <a href="lineup.html" class="btn-hero primary">Conheça a Line</a>
-                <a href="agenda.html" class="btn-hero secondary">Próximos Jogos</a>
-                <a href="recrutamento.html" class="btn-hero recruitment">Recrutamento</a>
+            <p class="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
+                A mira é certa, o ponto é morto. Dominando o cenário competitivo com precisão absoluta.
+            </p>
+            
+            <!-- Botões de Ação -->
+            <div class="flex flex-wrap justify-center items-center gap-4 pt-2">
+                <a href="lineup.html" class="px-6 py-3.5 rounded-xl bg-deadpoint-orange hover:bg-deadpoint-orange-hover text-black font-extrabold uppercase text-sm tracking-wide transition transform hover:-translate-y-0.5 shadow-lg shadow-orange-500/20">
+                    Conheça a Line
+                </a>
+                <a href="agenda.html" class="px-6 py-3.5 rounded-xl bg-deadpoint-blue/80 hover:bg-deadpoint-blue border border-slate-700 hover:border-deadpoint-orange text-white font-bold uppercase text-sm tracking-wide transition transform hover:-translate-y-0.5">
+                    Próximos Jogos
+                </a>
+                <a href="recrutamento.html" class="px-6 py-3.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-400 font-bold uppercase text-sm tracking-wide transition transform hover:-translate-y-0.5">
+                    Recrutamento
+                </a>
             </div>
 
-            <div class="hero-socials animate-fade">
-                <a href="https://www.instagram.com/_dead_point_" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.tiktok.com/@deadpointdp" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://discord.gg/6eqAbqm289" target="_blank" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+            <!-- Redes Sociais -->
+            <div class="flex items-center justify-center gap-6 pt-4 text-2xl">
+                <a href="https://www.instagram.com/_dead_point_" target="_blank" aria-label="Instagram" class="w-12 h-12 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-deadpoint-orange hover:border-deadpoint-orange transition">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://www.tiktok.com/@deadpointdp" target="_blank" aria-label="TikTok" class="w-12 h-12 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-deadpoint-orange hover:border-deadpoint-orange transition">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+                <a href="https://discord.gg/6eqAbqm289" target="_blank" aria-label="Discord" class="w-12 h-12 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-deadpoint-orange hover:border-deadpoint-orange transition">
+                    <i class="fa-brands fa-discord"></i>
+                </a>
             </div>
-        </div>
 
-        <div class="discord-widget-card animate-fade">
-            <iframe src="https://discord.com/widget?id=1454568938385051805&theme=dark" 
-                    width="260" 
-                    height="85" 
-                    allowtransparency="true" 
-                    frameborder="0" 
-                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
-            </iframe>
+            <!-- Widget Discord com Contador de Online -->
+            <div class="pt-6 flex justify-center">
+                <div class="p-3 bg-deadpoint-blue/90 backdrop-blur-md rounded-2xl border border-blue-900/50 shadow-2xl inline-block max-w-xs w-full">
+                    
+                    <!-- Cabeçalho com Status Online -->
+                    <div class="flex items-center justify-between pb-2 px-1 mb-2 border-b border-slate-800 text-xs">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-brands fa-discord text-indigo-400 text-base"></i>
+                            <span class="font-bold text-slate-200">Servidor Discord</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-emerald-400 font-semibold text-[11px]">Online</span>
+                        </div>
+                    </div>
+
+                    <!-- Iframe Oficial Ajustado -->
+                    <iframe src="https://discord.com/widget?id=1454568938385051805&theme=dark" 
+                            width="100%" 
+                            height="110" 
+                            allowtransparency="true" 
+                            frameborder="0" 
+                            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+                            class="rounded-xl">
+                    </iframe>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- BOTÃO MANUAL -->
-    <div style="text-align: center; padding: 20px; background: #111;">
-        <button onclick="abrirModalNotificacoes()" style="background: #e50914; color: white; border: none; padding: 12px 24px; font-weight: bold; cursor: pointer; border-radius: 5px; font-size: 1rem;">
-            Receber Notificacoes da DEADPOINT
+    <!-- BOTÃO MANUAL NOTIFICAÇÕES -->
+    <div class="bg-deadpoint-navy/60 border-t border-slate-800/80 py-6 text-center px-4">
+        <button onclick="abrirModalNotificacoes()" class="bg-deadpoint-orange hover:bg-deadpoint-orange-hover text-black font-extrabold px-6 py-3 rounded-xl text-sm sm:text-base uppercase tracking-wider transition active:scale-95 shadow-lg shadow-orange-500/20">
+            Receber Notificações da DEADPOINT
         </button>
     </div>
 
-    <!-- HTML DO POP-UP CUSTOMIZADO -->
-    <div id="push-modal" style="display: none;">
-        <div class="modal-content">
-            <h3>Ativar Notificações</h3>
-            <p style="margin-top: 10px; font-size: 0.95rem; color: #ccc;">Queres receber alertas em tempo real sobre os próximos jogos e novidades da DEADPOINT?</p>
+    <!-- MODAL DE NOTIFICAÇÕES CUSTOMIZADO -->
+    <div id="push-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-deadpoint-blue border border-slate-700/80 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-5">
+            <h3 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                <i class="fa-solid fa-bell text-deadpoint-orange"></i> Ativar Notificações
+            </h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+                Queres receber alertas em tempo real sobre os próximos jogos e novidades da DEADPOINT?
+            </p>
             
-            <div style="text-align: left; margin: 15px 0; color: #fff; font-size: 0.9rem;">
-                <label style="display: block; margin-bottom: 8px; cursor: pointer;">
-                    <input type="checkbox" id="pref-jogos" checked> Próximos Jogos e Agenda
+            <!-- Preferências -->
+            <div class="space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-sm text-slate-200">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="pref-jogos" checked class="w-4 h-4 rounded text-deadpoint-orange focus:ring-deadpoint-orange bg-slate-800 border-slate-700">
+                    <span>Próximos Jogos e Agenda</span>
                 </label>
-                <label style="display: block; margin-bottom: 8px; cursor: pointer;">
-                    <input type="checkbox" id="pref-titulos" checked> Conquistas e Títulos
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="pref-titulos" checked class="w-4 h-4 rounded text-deadpoint-orange focus:ring-deadpoint-orange bg-slate-800 border-slate-700">
+                    <span>Conquistas e Títulos</span>
                 </label>
-                <label style="display: block; margin-bottom: 8px; cursor: pointer;">
-                    <input type="checkbox" id="pref-lineup" checked> Mudanças na Line-up
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="pref-lineup" checked class="w-4 h-4 rounded text-deadpoint-orange focus:ring-deadpoint-orange bg-slate-800 border-slate-700">
+                    <span>Mudanças na Line-up</span>
                 </label>
             </div>
 
-            <div class="modal-buttons">
-                <button class="btn-accept" onclick="aceitarNotificacoes()">Sim</button>
-                <button class="btn-deny" onclick="fecharModalNotificacoes()">Nao</button>
+            <!-- Botões Modal -->
+            <div class="flex gap-3 pt-2">
+                <button onclick="aceitarNotificacoes()" class="flex-1 py-2.5 rounded-xl bg-deadpoint-orange hover:bg-deadpoint-orange-hover text-black font-extrabold text-sm transition">
+                    Sim
+                </button>
+                <button onclick="fecharModalNotificacoes()" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition">
+                    Não
+                </button>
             </div>
-            <div id="push-message" style="margin-top: 10px;"></div>
+
+            <div id="push-message" class="text-center text-xs font-semibold min-h-[1rem]"></div>
         </div>
     </div>
 
     <!-- SCRIPT DO MENU MOBILE E MODAL -->
     <script>
         const mobileMenu = document.getElementById('mobile-menu');
-        const navList = document.querySelector('.nav-list');
+        const navContainer = document.getElementById('mobile-nav-container');
+
         mobileMenu.addEventListener('click', () => {
-            navList.classList.toggle('active');
+            navContainer.classList.toggle('hidden');
             const icon = mobileMenu.querySelector('i');
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-xmark');
@@ -120,12 +213,16 @@
         });
 
         function abrirModalNotificacoes() {
-            document.getElementById('push-modal').style.display = 'flex';
+            const modal = document.getElementById('push-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
             document.getElementById('push-message').innerText = '';
         }
 
         function fecharModalNotificacoes() {
-            document.getElementById('push-modal').style.display = 'none';
+            const modal = document.getElementById('push-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
         }
     </script>
 

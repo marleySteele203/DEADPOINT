@@ -8,74 +8,151 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- CSS Local -->
-    <link rel="stylesheet" href="lineup.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              deadpoint: {
+                black: '#070a12',
+                blue: '#0d1527',
+                navy: '#0b1120',
+                orange: '#ff5500',
+                'orange-hover': '#e64d00'
+              }
+            },
+            keyframes: {
+              'fadeIn': {
+                '0%': { opacity: '0', transform: 'translateY(8px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' }
+              },
+              'popIn': {
+                '0%': { opacity: '0', transform: 'scale(0.95) translateY(10px)' },
+                '100%': { opacity: '1', transform: 'scale(1) translateY(0)' }
+              },
+              'pulseGlow': {
+                '0%, 100%': { opacity: '0.6', filter: 'drop-shadow(0 0 15px rgba(255, 85, 0, 0.4))' },
+                '50%': { opacity: '1', filter: 'drop-shadow(0 0 25px rgba(255, 85, 0, 0.8))' }
+              }
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'pop-in': 'popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'pulse-glow': 'pulseGlow 3s infinite ease-in-out'
+            }
+          }
+        }
+      }
+    </script>
 
     <!-- Font Awesome & Flag Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
 </head>
-<body>
+<body class="bg-deadpoint-black text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between overflow-x-hidden relative">
 
-    <!-- Marca d'água de fundo -->
-    <div id="bg-watermark" class="watermark">DP MELI</div>
+    <!-- Marca d'água de fundo com transição suave -->
+    <div id="bg-watermark" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15vw] font-black text-slate-800/10 select-none pointer-events-none z-0 tracking-widest uppercase transition-all duration-500 ease-out">
+        IGN
+    </div>
 
     <!-- Header & Navegação -->
-    <header>
-        <div class="navbar">
-            <div class="logo">DEAD<span>POINT</span></div>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="#" class="active">Line-up</a></li>
-                    <li><a href="conquistas.html">Títulos</a></li>
-                    <li><a href="agenda.html">Agenda</a></li>
+    <header class="sticky top-0 z-50 bg-deadpoint-navy/90 backdrop-blur-md border-b border-slate-800/80 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <div class="text-2xl sm:text-3xl font-black tracking-wider text-white select-none hover:scale-105 transition-transform duration-200 cursor-pointer">
+                DEAD<span class="text-deadpoint-orange">POINT</span>
+            </div>
+            
+            <!-- Botão Menu Mobile -->
+            <div class="md:hidden text-2xl text-slate-200 cursor-pointer p-2 hover:text-deadpoint-orange transition-colors duration-200" id="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+            <!-- Links de Navegação -->
+            <nav class="hidden md:block">
+                <ul class="flex items-center gap-8 font-semibold text-sm uppercase tracking-wide">
+                    <li><a href="index.html" class="text-slate-300 hover:text-deadpoint-orange transition-colors duration-200">Home</a></li>
+                    <li><a href="#" class="text-deadpoint-orange border-b-2 border-deadpoint-orange pb-1">Line-up</a></li>
+                    <li><a href="conquistas.html" class="text-slate-300 hover:text-deadpoint-orange transition-colors duration-200">Títulos</a></li>
+                    <li><a href="agenda.html" class="text-slate-300 hover:text-deadpoint-orange transition-colors duration-200">Agenda</a></li>
                 </ul>
             </nav>
+        </div>
+
+        <!-- Menu Mobile Suspenso -->
+        <div class="md:hidden hidden bg-deadpoint-blue border-b border-slate-800 animate-fade-in" id="mobile-nav-container">
+            <ul class="flex flex-col p-4 space-y-3 font-semibold text-sm uppercase">
+                <li><a href="index.html" class="text-slate-300 hover:text-deadpoint-orange block py-1 transition-colors">Home</a></li>
+                <li><a href="#" class="text-deadpoint-orange block py-1">Line-up</a></li>
+                <li><a href="conquistas.html" class="text-slate-300 hover:text-deadpoint-orange block py-1 transition-colors">Títulos</a></li>
+                <li><a href="agenda.html" class="text-slate-300 hover:text-deadpoint-orange block py-1 transition-colors">Agenda</a></li>
+            </ul>
         </div>
     </header>
 
     <!-- Área Principal do Slider -->
-    <main class="slider-container" id="slider-zone">
+    <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-8" id="slider-zone">
         
-        <button class="nav-btn prev-btn" aria-label="Jogador Anterior" onclick="changePlayer(-1)">
-            <i class="fa-solid fa-chevron-left"></i>
+        <!-- Botão Anterior -->
+        <button class="nav-btn prev-btn z-20 w-12 h-12 rounded-full bg-deadpoint-navy/80 hover:bg-deadpoint-orange border border-slate-700 hover:border-deadpoint-orange text-white hover:text-black flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg shrink-0" aria-label="Jogador Anterior" onclick="changePlayer(-1)">
+            <i class="fa-solid fa-chevron-left text-lg"></i>
         </button>
 
-        <div class="player-showcase" id="player-showcase">
+        <!-- Showcase do Jogador -->
+        <div class="player-showcase flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 w-full max-w-5xl mx-auto py-4" id="player-showcase">
             
             <!-- Lado da Imagem -->
-            <div class="player-image-side" id="player-img-container" style="--role-color-primary: #00ffff; --role-color-secondary: #ff0055;">
-                <img id="player-img" src="mahel.png" alt="Player" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/0b0e14/ffffff?text=DEADPOINT';">
-                <div class="role-badge" id="player-role">SNIPER / CEO</div>
+            <div class="player-image-side relative flex flex-col items-center justify-center transition-all duration-300 ease-out transform" id="player-img-container" style="--role-color-primary: #00ffff; --role-color-secondary: #ff0055;">
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-gradient-to-t from-deadpoint-orange/20 to-transparent rounded-full blur-2xl opacity-40 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <img id="player-img" src="mahel.png" alt="Player" class="relative z-10 w-72 sm:w-80 md:w-96 h-auto max-h-[500px] object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)] transition-all duration-500 ease-out group-hover:scale-105" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x500/0b0e14/ffffff?text=DEADPOINT';">
+                </div>
+                <div class="role-badge mt-4 px-4 py-1.5 rounded-full bg-gradient-to-r from-deadpoint-navy to-deadpoint-blue border border-cyan-500/40 text-cyan-400 font-extrabold text-xs tracking-wider uppercase shadow-md animate-pulse-glow" id="player-role">
+                    SNIPER / CEO
+                </div>
             </div>
 
             <!-- Lado das Informações -->
-            <div class="player-info-side">
-                <div class="player-meta-header">
-                    <span class="line-tag">Roster Oficial</span>
-                    <span class="country-badge" id="player-country"><span class="fi fi-mz"></span> Moçambique</span>
+            <div class="player-info-side flex-1 text-center md:text-left space-y-4 max-w-lg transition-all duration-300 ease-out transform">
+                <div class="player-meta-header flex items-center justify-center md:justify-start gap-3 text-xs uppercase font-bold tracking-wider text-slate-400">
+                    <span class="line-tag bg-deadpoint-orange/10 text-deadpoint-orange px-2.5 py-1 rounded-md border border-deadpoint-orange/30 shadow-sm">Roster Oficial</span>
+                    <span class="country-badge flex items-center gap-1.5 bg-slate-900/80 px-2.5 py-1 rounded-md border border-slate-800" id="player-country">
+                        <span class="fi fi-mz"></span> Moçambique
+                    </span>
                 </div>
 
-                <h1 id="player-nick">DP MELI</h1>
-                <h3 id="player-name">MARLEY STEELE</h3>
+                <div>
+                    <h1 id="player-nick" class="text-4xl sm:text-5xl font-black tracking-tight text-white uppercase drop-shadow-md">
+                        DP MELI
+                    </h1>
+                    <h3 id="player-name" class="text-lg font-bold text-deadpoint-orange tracking-wide uppercase mt-1">
+                        MARLEY STEELE
+                    </h3>
+                </div>
                 
-                <p class="player-bio" id="player-bio">Responsável pela estratégia, chamadas de call decisivas e coordenação da equipe em direção ao topo do cenário.</p>
+                <p class="player-bio text-slate-300 text-sm leading-relaxed" id="player-bio">
+                    Responsável pela estratégia, chamadas de call decisivas e coordenação da equipe em direção ao topo do cenário.
+                </p>
 
-                <div class="player-actions">
-                    <button class="btn-stats" id="btn-stats-id" onclick="toggleStatsModal(true)">
+                <!-- Ações do Jogador -->
+                <div class="player-actions flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
+                    <button class="btn-stats px-5 py-2.5 rounded-xl bg-deadpoint-orange hover:bg-deadpoint-orange-hover text-black font-extrabold text-xs uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2 shadow-lg shadow-orange-500/20" id="btn-stats-id" onclick="toggleStatsModal(true)">
                         <i class="fa-solid fa-chart-simple"></i> Estatísticas
                     </button>
                     
-                    <button class="btn-compare" onclick="openCompareModal()">
-                        <i class="fa-solid fa-code-compare"></i> Comparar
+                    <button class="btn-compare px-5 py-2.5 rounded-xl bg-deadpoint-blue hover:bg-slate-800 border border-slate-700 hover:border-deadpoint-orange text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2" onclick="openCompareModal()">
+                        <i class="fa-solid fa-code-compare text-deadpoint-orange"></i> Comparar
                     </button>
 
-                    <div class="player-socials">
-                        <a href="https://instagram.com/marley_mahel_" id="link-ig" target="_blank" rel="noopener" onclick="handleSocialClick(event, 'ig')">
+                    <div class="player-socials flex items-center gap-2 ml-0 md:ml-2">
+                        <a href="https://instagram.com/marley_mahel_" id="link-ig" target="_blank" rel="noopener" onclick="handleSocialClick(event, 'ig')" class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-deadpoint-orange hover:border-deadpoint-orange hover:scale-110 transition-all duration-200">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
-                        <a href="https://tiktok.com/@dp_meli_" id="link-tk" target="_blank" rel="noopener" onclick="handleSocialClick(event, 'tk')">
+                        <a href="https://tiktok.com/@dp_meli_" id="link-tk" target="_blank" rel="noopener" onclick="handleSocialClick(event, 'tk')" class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-deadpoint-orange hover:border-deadpoint-orange hover:scale-110 transition-all duration-200">
                             <i class="fa-brands fa-tiktok"></i>
                         </a>
                     </div>
@@ -84,67 +161,70 @@
 
         </div>
 
-        <button class="nav-btn next-btn" aria-label="Próximo Jogador" onclick="changePlayer(1)">
-            <i class="fa-solid fa-chevron-right"></i>
+        <!-- Botão Próximo -->
+        <button class="nav-btn next-btn z-20 w-12 h-12 rounded-full bg-deadpoint-navy/80 hover:bg-deadpoint-orange border border-slate-700 hover:border-deadpoint-orange text-white hover:text-black flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg shrink-0" aria-label="Próximo Jogador" onclick="changePlayer(1)">
+            <i class="fa-solid fa-chevron-right text-lg"></i>
         </button>
 
     </main>
 
     <!-- Barra de Miniaturas (Thumbnails) -->
-    <div class="thumbnails-bar-container">
-        <div class="thumbnails-scroll" id="thumbnails-scroll">
+    <div class="thumbnails-bar-container z-20 w-full bg-deadpoint-navy/80 border-t border-slate-800/80 py-4 backdrop-blur-md">
+        <div class="thumbnails-scroll max-w-7xl mx-auto px-4 flex items-center justify-center gap-3 overflow-x-auto" id="thumbnails-scroll">
             <!-- Gerado via JavaScript -->
         </div>
     </div>
 
     <!-- Modal de Estatísticas Individual -->
-    <div class="stats-modal" id="stats-modal" role="dialog" aria-labelledby="modal-title" onclick="handleOutsideModalClick(event, 'stats-modal')">
-        <div class="modal-content">
-            <button class="close-btn" onclick="toggleStatsModal(false)" aria-label="Fechar modal">
+    <div class="stats-modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-300 opacity-0 pointer-events-none" id="stats-modal" role="dialog" aria-labelledby="modal-title" onclick="handleOutsideModalClick(event, 'stats-modal')">
+        <div class="modal-content bg-deadpoint-blue border border-slate-700/80 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative space-y-6 animate-pop-in">
+            <button class="close-btn absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-all duration-200 hover:rotate-90" onclick="toggleStatsModal(false)" aria-label="Fechar modal">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
-            <h2 id="modal-title">DESEMPENHO: DP MELI</h2>
-            <div class="line-divider" id="modal-divider"></div>
+            <div class="text-center md:text-left">
+                <h2 id="modal-title" class="text-xl font-extrabold text-white uppercase tracking-wide">DESEMPENHO: DP MELI</h2>
+                <div class="line-divider h-1 w-16 bg-deadpoint-orange rounded-full mt-2" id="modal-divider"></div>
+            </div>
 
-            <div class="stats-grid">
-                <div class="stat-bar-wrapper">
-                    <div class="stat-info">
-                        <span><i class="fa-solid fa-skull"></i> K/D RATE</span>
-                        <span id="stat-kd-val" class="stat-value">2.45</span>
+            <div class="stats-grid space-y-4">
+                <div class="stat-bar-wrapper space-y-1.5">
+                    <div class="stat-info flex justify-between text-xs font-bold text-slate-300">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-skull text-deadpoint-orange"></i> K/D RATE</span>
+                        <span id="stat-kd-val" class="stat-value text-white font-mono">2.45</span>
                     </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" id="bar-kd"></div>
+                    <div class="bar-bg w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div class="bar-fill h-full bg-deadpoint-orange rounded-full transition-all duration-700 ease-out" id="bar-kd"></div>
                     </div>
                 </div>
 
-                <div class="stat-bar-wrapper">
-                    <div class="stat-info">
-                        <span><i class="fa-solid fa-crosshairs"></i> PRECISÃO (HEADSHOT %)</span>
-                        <span id="stat-hs-val" class="stat-value">42%</span>
+                <div class="stat-bar-wrapper space-y-1.5">
+                    <div class="stat-info flex justify-between text-xs font-bold text-slate-300">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-deadpoint-orange"></i> PRECISÃO (HEADSHOT %)</span>
+                        <span id="stat-hs-val" class="stat-value text-white font-mono">42%</span>
                     </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" id="bar-hs"></div>
-                    </div>
-                </div>
-
-                <div class="stat-bar-wrapper">
-                    <div class="stat-info">
-                        <span><i class="fa-solid fa-fire"></i> DANO MÉDIO / PARTIDA</span>
-                        <span id="stat-dmg-val" class="stat-value">1280</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" id="bar-dmg"></div>
+                    <div class="bar-bg w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div class="bar-fill h-full bg-deadpoint-orange rounded-full transition-all duration-700 ease-out" id="bar-hs"></div>
                     </div>
                 </div>
 
-                <div class="stat-bar-wrapper">
-                    <div class="stat-info">
-                        <span><i class="fa-solid fa-id-card"></i> PARTICIPAÇÃO EM ABATES</span>
-                        <span id="stat-kp-val" class="stat-value">72%</span>
+                <div class="stat-bar-wrapper space-y-1.5">
+                    <div class="stat-info flex justify-between text-xs font-bold text-slate-300">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-fire text-deadpoint-orange"></i> DANO MÉDIO / PARTIDA</span>
+                        <span id="stat-dmg-val" class="stat-value text-white font-mono">1280</span>
                     </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill" id="bar-kp"></div>
+                    <div class="bar-bg w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div class="bar-fill h-full bg-deadpoint-orange rounded-full transition-all duration-700 ease-out" id="bar-dmg"></div>
+                    </div>
+                </div>
+
+                <div class="stat-bar-wrapper space-y-1.5">
+                    <div class="stat-info flex justify-between text-xs font-bold text-slate-300">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-id-card text-deadpoint-orange"></i> PARTICIPAÇÃO EM ABATES</span>
+                        <span id="stat-kp-val" class="stat-value text-white font-mono">72%</span>
+                    </div>
+                    <div class="bar-bg w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div class="bar-fill h-full bg-deadpoint-orange rounded-full transition-all duration-700 ease-out" id="bar-kp"></div>
                     </div>
                 </div>
             </div>
@@ -152,67 +232,98 @@
     </div>
 
     <!-- Modal Comparativo (Versus Mode) -->
-    <div class="stats-modal" id="compare-modal" role="dialog" aria-labelledby="modal-title-compare" onclick="handleOutsideModalClick(event, 'compare-modal')">
-        <div class="modal-content compare-modal-content">
-            <button class="close-btn" onclick="toggleCompareModal(false)" aria-label="Fechar modal">
+    <div class="stats-modal fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 transition-all duration-300 opacity-0 pointer-events-none" id="compare-modal" role="dialog" aria-labelledby="modal-title-compare" onclick="handleOutsideModalClick(event, 'compare-modal')">
+        <div class="modal-content compare-modal-content bg-deadpoint-blue border border-slate-700/80 rounded-2xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl relative space-y-6 animate-pop-in">
+            <button class="close-btn absolute top-4 right-4 text-slate-400 hover:text-white text-xl transition-all duration-200 hover:rotate-90" onclick="toggleCompareModal(false)" aria-label="Fechar modal">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
-            <div class="vs-header">
-                <h2 id="modal-title-compare">MODO COMPARATIVO</h2>
-                <div class="line-divider"></div>
+            <div class="vs-header text-center">
+                <h2 id="modal-title-compare" class="text-xl font-extrabold text-white uppercase tracking-wide">MODO COMPARATIVO</h2>
+                <div class="line-divider h-1 w-16 bg-deadpoint-orange mx-auto rounded-full mt-2"></div>
             </div>
 
-            <div class="compare-selectors">
-                <div class="selector-box p1-box">
-                    <label for="select-p1">JOGADOR 1</label>
-                    <select id="select-p1" onchange="renderComparison()"></select>
+            <!-- Seletores -->
+            <div class="compare-selectors flex items-center justify-between gap-2 sm:gap-4 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                <div class="selector-box p1-box flex-1 space-y-1 text-center">
+                    <label for="select-p1" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">JOGADOR 1</label>
+                    <select id="select-p1" onchange="renderComparison()" class="w-full bg-deadpoint-navy border border-slate-700 text-white text-xs rounded-lg p-2 focus:outline-none focus:border-deadpoint-orange transition-colors"></select>
                 </div>
-                <div class="vs-badge">VS</div>
-                <div class="selector-box p2-box">
-                    <label for="select-p2">JOGADOR 2</label>
-                    <select id="select-p2" onchange="renderComparison()"></select>
-                </div>
-            </div>
 
-            <div class="compare-profiles">
-                <div class="p-card" id="p1-card">
-                    <img id="p1-img" src="" alt="Player 1">
-                    <h3 id="p1-nick">NICK</h3>
-                    <span id="p1-role">ROLE</span>
-                </div>
-                <div class="p-card" id="p2-card">
-                    <img id="p2-img" src="" alt="Player 2">
-                    <h3 id="p2-nick">NICK</h3>
-                    <span id="p2-role">ROLE</span>
+                <div class="vs-badge font-black text-deadpoint-orange text-lg italic px-2 animate-pulse">VS</div>
+
+                <div class="selector-box p2-box flex-1 space-y-1 text-center">
+                    <label for="select-p2" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">JOGADOR 2</label>
+                    <select id="select-p2" onchange="renderComparison()" class="w-full bg-deadpoint-navy border border-slate-700 text-white text-xs rounded-lg p-2 focus:outline-none focus:border-deadpoint-orange transition-colors"></select>
                 </div>
             </div>
 
-            <div class="compare-stats-grid">
-                <div class="cmp-row">
-                    <span id="cmp-p1-kd" class="cmp-val">0.00</span>
-                    <div class="cmp-label"><i class="fa-solid fa-skull"></i> K/D RATE</div>
-                    <span id="cmp-p2-kd" class="cmp-val">0.00</span>
+            <!-- Perfis dos Jogadores -->
+            <div class="compare-profiles grid grid-cols-2 gap-4 text-center">
+                <div class="p-card bg-slate-900/40 p-4 rounded-xl border border-slate-800/80 flex flex-col items-center space-y-2 hover:border-slate-700 transition-colors" id="p1-card">
+                    <img id="p1-img" src="" alt="Player 1" class="w-20 h-20 object-contain drop-shadow transition-transform duration-300 hover:scale-105">
+                    <h3 id="p1-nick" class="font-extrabold text-sm text-white uppercase">NICK</h3>
+                    <span id="p1-role" class="text-[10px] font-bold text-deadpoint-orange uppercase bg-deadpoint-orange/10 px-2 py-0.5 rounded border border-deadpoint-orange/20">ROLE</span>
                 </div>
-                <div class="cmp-row">
-                    <span id="cmp-p1-hs" class="cmp-val">0%</span>
-                    <div class="cmp-label"><i class="fa-solid fa-crosshairs"></i> HEADSHOT %</div>
-                    <span id="cmp-p2-hs" class="cmp-val">0%</span>
+                <div class="p-card bg-slate-900/40 p-4 rounded-xl border border-slate-800/80 flex flex-col items-center space-y-2 hover:border-slate-700 transition-colors" id="p2-card">
+                    <img id="p2-img" src="" alt="Player 2" class="w-20 h-20 object-contain drop-shadow transition-transform duration-300 hover:scale-105">
+                    <h3 id="p2-nick" class="font-extrabold text-sm text-white uppercase">NICK</h3>
+                    <span id="p2-role" class="text-[10px] font-bold text-deadpoint-orange uppercase bg-deadpoint-orange/10 px-2 py-0.5 rounded border border-deadpoint-orange/20">ROLE</span>
                 </div>
-                <div class="cmp-row">
-                    <span id="cmp-p1-dmg" class="cmp-val">0</span>
-                    <div class="cmp-label"><i class="fa-solid fa-fire"></i> DANO MÉDIO</div>
-                    <span id="cmp-p2-dmg" class="cmp-val">0</span>
+            </div>
+
+            <!-- Tabela comparativa de estatísticas -->
+            <div class="compare-stats-grid space-y-2 bg-slate-900/40 p-4 rounded-xl border border-slate-800/80 font-mono text-xs">
+                <div class="cmp-row flex items-center justify-between py-1.5 border-b border-slate-800/50">
+                    <span id="cmp-p1-kd" class="cmp-val font-bold text-white w-1/3 text-center transition-all duration-300">0.00</span>
+                    <div class="cmp-label font-sans font-bold text-slate-400 text-[11px] w-1/3 text-center flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-skull text-deadpoint-orange"></i> K/D RATE
+                    </div>
+                    <span id="cmp-p2-kd" class="cmp-val font-bold text-white w-1/3 text-center transition-all duration-300">0.00</span>
                 </div>
-                <div class="cmp-row">
-                    <span id="cmp-p1-kp" class="cmp-val">0%</span>
-                    <div class="cmp-label"><i class="fa-solid fa-id-card"></i> PARTICIPAÇÃO</div>
-                    <span id="cmp-p2-kp" class="cmp-val">0%</span>
+
+                <div class="cmp-row flex items-center justify-between py-1.5 border-b border-slate-800/50">
+                    <span id="cmp-p1-hs" class="cmp-val font-bold text-white w-1/3 text-center transition-all duration-300">0%</span>
+                    <div class="cmp-label font-sans font-bold text-slate-400 text-[11px] w-1/3 text-center flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-crosshairs text-deadpoint-orange"></i> HEADSHOT %
+                    </div>
+                    <span id="cmp-p2-hs" class="cmp-val font-bold text-white w-1/3 text-center transition-all duration-300">0%</span>
+                </div>
+
+                <div class="cmp-row flex items-center justify-between py-1.5 border-b border-slate-800/50">
+                    <span id="cmp-p1-dmg" class="cmp-val font-bold text-white w-1/3 text-center transition-all duration-300">0</span>
+                    <div class="cmp-label font-sans font-bold text-slate-400 text-[11px] w-1/3 text-center flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-fire text-deadpoint-orange"></i> DANO MÉDIO
+                    </div>
+                    <span id="cmp-p2-dmg" class="cmp-val font-bold text-white w-1/3 text-center transition-all duration-300">0</span>
+                </div>
+
+                <div class="cmp-row flex items-center justify-between py-1.5">
+                    <span id="cmp-p1-kp" class="cmp-val font-bold text-white w-1/3 text-center transition-all duration-300">0%</span>
+                    <div class="cmp-label font-sans font-bold text-slate-400 text-[11px] w-1/3 text-center flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-id-card text-deadpoint-orange"></i> PARTICIPAÇÃO
+                    </div>
+                    <span id="cmp-p2-kp" class="cmp-val font-bold text-white w-1/3 text-center transition-all duration-300">0%</span>
                 </div>
             </div>
 
         </div>
     </div>
+
+    <!-- Script Menu Mobile -->
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navContainer = document.getElementById('mobile-nav-container');
+
+        if (mobileMenu && navContainer) {
+            mobileMenu.addEventListener('click', () => {
+                navContainer.classList.toggle('hidden');
+                const icon = mobileMenu.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-xmark');
+            });
+        }
+    </script>
 
     <!-- Script Local -->
     <script src="lineup.js"></script>
